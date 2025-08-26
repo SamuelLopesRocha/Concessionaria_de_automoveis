@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  api_concessionaria:
+    build: .
+    ports:
+      - "6000:6000"
+    #volumes:
+      #- ./banco.db:/app/banco.db  # Mapeia o banco fora do container, opcional
+    networks:
+      - projeto-concessionaria
+
+networks:
+  projeto-concessionaria:
+    external: true
