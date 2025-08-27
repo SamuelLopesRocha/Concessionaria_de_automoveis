@@ -1,10 +1,11 @@
-package carro      // vai ser importado como "models.carro_model"
+package carro
 
 type Carro struct {
-    placa   string `json:"placa" gorm:"primaryKey"` // Placa de Carro
-    cor string `json:"cor" gorm:"type:varchar(100);not null"`
-    marca string `json:"marca" gorm:"type:varchar(100);not null"`
-	modelo string `json:"modelo" gorm:"type:varchar(100);not null"`
-	valor string `json:"recursos" gorm:"type:varchar(100)"`
-	km  string `json:"km " gorm:"type:varchar(100);not null"`
+    Placa  string `json:"placa" gorm:"primaryKey"` // Placa de Carro
+    Cor    string `json:"cor" gorm:"type:varchar(100);not null"`
+    Marca  string `json:"marca" gorm:"type:varchar(100);not null"`
+    Modelo string `json:"modelo" gorm:"type:varchar(100);not null"`
+    Valor  float64 `json:"valor"`
+    Km 	   float32 `json:"km" gorm:"not null"`
+	Ano    int    `json:"ano" gorm:"not null"`
 }
