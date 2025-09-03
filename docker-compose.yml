@@ -12,4 +12,4 @@ services:
 
 networks:
   projeto-concessionaria:
-    external: true
+    name: projeto-concessionaria
