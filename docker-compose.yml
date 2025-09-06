@@ -23,7 +23,7 @@ services:
       MYSQL_ROOT_PASSWORD: minhasenha
       MYSQL_DATABASE: concessionaria_db
     volumes:
-      - db_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql   # bind mount: dados ficam no host
     ports:
       - "3307:3306"
     networks:
@@ -33,6 +33,3 @@ services:
 networks:
   projeto-concessionaria:
     name: projeto-concessionaria
-
-volumes:
-  db_data:
