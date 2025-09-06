@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // Esta função verifica se a placa está no formato padrão brasileiro (ABC-1234 ou ABC1D23) com ou sem hífen.
@@ -149,7 +150,11 @@ func GetCarroByID_C(c *gin.Context) {
 
 	carroEncontrado, err := GetCarroByPlaca(placa)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Carro não encontrado"})
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Carro não encontrado"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -171,7 +176,11 @@ func UpdateCarro_C(c *gin.Context) {
 
 	carroEncontrado, err := GetCarroByPlaca(placa)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Carro não encontrado"})
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Carro não encontrado"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
