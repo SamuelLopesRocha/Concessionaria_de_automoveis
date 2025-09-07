@@ -5,11 +5,34 @@ services:
     build: .
     ports:
       - "6000:6000"
-    #volumes:
-      #- ./banco.db:/app/banco.db  # Mapeia o banco fora do container, opcional
+    depends_on:
+      - db
+    environment:
+      - DB_USER=root
+      - DB_PASSWORD=minhasenha
+      - DB_NAME=concessionaria_db
+      - DB_HOST=db
     networks:
       - projeto-concessionaria
 
+  db:
+    image: mysql:8.0
+    container_name: mysql-concessionaria
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: minhasenha
+      MYSQL_DATABASE: concessionaria_db
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - projeto-concessionaria
+    command: --default-authentication-plugin=mysql_native_password
+
 networks:
   projeto-concessionaria:
-    external: true
+    name: projeto-concessionaria
+
+volumes:
+  db_data:

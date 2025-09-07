@@ -30,6 +30,6 @@ func main() {
 	// Registra as rotas do pacote carro
 	carro.CarroRoutes(r)
 
-	// Roda o servidor na porta 8080
-	r.Run(":5000")
+	// Roda o servidor na porta 6000
+	r.Run(":5001")
 }
