@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   api_concessionaria:
     build: .
@@ -23,7 +21,7 @@ services:
       MYSQL_ROOT_PASSWORD: minhasenha
       MYSQL_DATABASE: concessionaria_db
     volumes:
-      - ./mysql_data:/var/lib/mysql   # bind mount: dados ficam no host
+      - db_data:/var/lib/mysql  # <- deixa só o volume do Docker, sem mapear para pasta local
     ports:
       - "3307:3306"
     networks:
@@ -32,4 +30,6 @@ services:
 
 networks:
   projeto-concessionaria:
-    name: projeto-concessionaria
+
+volumes:
+  db_data:
