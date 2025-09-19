@@ -11,4 +11,4 @@ func FuncRoutes(router *gin.Engine) {
 		funcGroup.PUT("/:id", UpdateFunc_C)
 		funcGroup.DELETE("/:id", DeleteFunc_C)
 	}
-}
+} // FuncRoutes
