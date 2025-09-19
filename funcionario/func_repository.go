@@ -1,6 +1,5 @@
 package funcionario
 
-
 import "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
 
 // Buscar todos os funcionarios
