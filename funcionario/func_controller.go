@@ -1,6 +1,7 @@
 package funcionario
 
 import (
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -120,9 +121,11 @@ func UpdateFunc_C(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
 		return
 	}
+	log.Printf("[PUT] Iniciando update id=%s", id)
 
 	funcDB, err := GetFuncByID(id)
 	if err != nil {
+		log.Printf("[PUT] ID %s não encontrado: %v", id, err)
 		c.JSON(http.StatusNotFound, gin.H{"error": "Funcionário não encontrado"})
 		return
 	}
@@ -135,11 +138,13 @@ func UpdateFunc_C(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&body); err != nil {
+		log.Printf("[PUT] Erro bind JSON id=%s: %v", id, err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
 		return
 	}
 
 	if !ValidarNome(body.Nome) || !ValidarCargo(body.Cargo) || !ValidarIdade(body.Idade) {
+		log.Printf("[PUT] Validação falhou id=%s nome=%q cargo=%q idade=%d", id, body.Nome, body.Cargo, body.Idade)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Campos inválidos"})
 		return
 	}
@@ -149,10 +154,12 @@ func UpdateFunc_C(c *gin.Context) {
 	funcDB.Idade = body.Idade
 
 	if err := UpdateFunc(funcDB); err != nil {
+		log.Printf("[PUT] Erro ao salvar id=%s: %v", id, err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar funcionário"})
 		return
 	}
 
+	log.Printf("[PUT] Sucesso id=%s", id)
 	c.JSON(http.StatusOK, gin.H{
 		"message":     "Funcionário atualizado com sucesso",
 		"funcionario": funcDB,

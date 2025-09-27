@@ -1,47 +1,44 @@
 package funcionario
 
-import "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
+import (
+	"errors"
 
-// Buscar todos os funcionarios
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
+	"gorm.io/gorm"
+)
+
 func GetAllFuncs() ([]Funcionario, error) {
 	var funcs []Funcionario
 	result := config.DB.Find(&funcs)
 	return funcs, result.Error
 }
 
-// Criar novo funcionario
-func CreateFunc(funci *Funcionario) error {
-	result := config.DB.Create(funci)
-	return result.Error
+func CreateFunc(f *Funcionario) error {
+	return config.DB.Create(f).Error
 }
 
-// Buscar funcionario por ID
 func GetFuncByID(id string) (*Funcionario, error) {
-	var funci Funcionario
-	result := config.DB.First(&funci, "id = ?", id)
-	if result.Error != nil {
-		return nil, result.Error
+	var f Funcionario
+	result := config.DB.First(&f, "id = ?", id)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
 	}
-	return &funci, nil
+	return &f, result.Error
 }
 
-// evitar duplicidade do CPF
 func GetFuncByCPF(cpf string) (*Funcionario, error) {
 	var f Funcionario
-	if err := config.DB.Where("cpf = ?", cpf).First(&f).Error; err != nil {
-		return nil, err
+	result := config.DB.Where("cpf = ?", cpf).First(&f)
+	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return nil, gorm.ErrRecordNotFound
 	}
-	return &f, nil
+	return &f, result.Error
 }
 
-// Atualizar funcionario
-func UpdateFunc(funci *Funcionario) error {
-	result := config.DB.Save(funci)
-	return result.Error
+func UpdateFunc(f *Funcionario) error {
+	return config.DB.Save(f).Error
 }
 
-// Deletar funcionario
 func DeleteFunc(id string) error {
-	result := config.DB.Delete(&Funcionario{}, "id = ?", id)
-	return result.Error
+	return config.DB.Delete(&Funcionario{}, "id = ?", id).Error
 }
