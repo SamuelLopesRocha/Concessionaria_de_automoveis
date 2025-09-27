@@ -10,9 +10,9 @@ import (
 
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/carro"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/compra"
-    "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/funcionario"
-    "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/venda"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/funcionario"
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/venda"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -29,7 +29,6 @@ func main() {
 	// Roteador
 	r := gin.Default()
 
-<<<<<<< HEAD
 	// CORS: configuração para desenvolvimento
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5500", "http://127.0.0.1:5500"}, // ajuste conforme porta do seu frontend
@@ -66,7 +65,7 @@ func main() {
 	carro.CarroRoutes(r)
 	funcionario.FuncRoutes(r)
 	compra.CompraRoutes(r)
-    venda.VendaRoutes(r)
+	venda.VendaRoutes(r)
 
 	// Health check simples
 	r.GET("/health", func(c *gin.Context) {
