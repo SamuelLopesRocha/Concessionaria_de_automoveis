@@ -1,0 +1,179 @@
+/* Reset e base */
+body, h1, h2, ul, form, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+    background: #f7f7f7;
+    color: #222;
+    min-height: 100vh;
+}
+
+/* Navbar estilo Chevrolet */
+.navbar {
+    width: 100%;
+    height: 70px;
+    background: #fff;
+    border-bottom: 2px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    padding: 0 48px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.logo {
+    font-size: 2.0rem;
+    margin-right: 16px;
+    color: #d32f2f;
+    user-select: none;
+    font-weight: bold;
+}
+
+.nav-title {
+    font-size: 1.7rem;
+    color: #222;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+/* Navegação simples */
+.simple-nav { justify-content: space-between; }
+.nav-links { list-style: none; display: flex; gap: 16px; margin-right: auto; }
+.nav-links li a { text-decoration: none; font-weight:600; color:#444; padding:8px 4px; position:relative; }
+.nav-links li a.active, .nav-links li a:hover { color:#d32f2f; }
+.nav-links li a.active::after, .nav-links li a:hover::after { content:""; position:absolute; left:0; bottom:-4px; height:3px; width:100%; background:#d32f2f; border-radius:2px; }
+
+/* Conteúdo principal */
+.main-content {
+    margin-top: 100px;
+    padding-bottom: 32px;
+}
+
+/* Títulos */
+h1 {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 2.5rem;
+    color: #d32f2f;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 32px;
+    color: #222;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Formulário estilo Chevrolet */
+form#form-carro {
+    background: #fff;
+    max-width: 600px;
+    margin: 40px auto 28px auto;
+    padding: 40px 36px 32px 36px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(30,30,60,0.09);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    justify-content: center;
+}
+
+form#form-carro input {
+    flex: 1 1 45%;
+    padding: 15px;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1.13rem;
+    background: #fafbfc;
+    transition: border-color 0.2s;
+}
+
+form#form-carro input:focus {
+    border-color: #d32f2f;
+    outline: none;
+}
+
+form#form-carro button {
+    flex: 1 1 45%;
+    padding: 15px 0;
+    background: linear-gradient(90deg, #d32f2f 60%, #b71c1c 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.13rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(30,30,60,0.08);
+    letter-spacing: 1px;
+}
+
+form#form-carro button:hover {
+    background: linear-gradient(90deg, #b71c1c 60%, #d32f2f 100%);
+    box-shadow: 0 4px 16px rgba(30,30,60,0.13);
+}
+
+/* Lista de carros */
+#carros-list {
+    max-width: 700px;
+    margin: 0 auto 36px auto;
+    padding: 0;
+    list-style: none;
+}
+
+#carros-list li {
+    background: #fff;
+    margin-bottom: 18px;
+    padding: 22px 28px;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(30, 30, 60, 0.07);
+    font-size: 1.18rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-left: 7px solid #d32f2f;
+    transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+#carros-list li:nth-child(even) {
+    background: #ffeaea;
+    border-left: 7px solid #b71c1c;
+}
+
+#carros-list li:hover {
+    box-shadow: 0 4px 16px rgba(30,30,60,0.13);
+    border-left: 7px solid #232323;
+}
+
+/* Responsividade */
+@media (max-width: 900px) {
+    .navbar {
+        padding: 0 10px;
+        height: 56px;
+    }
+    .main-content {
+        margin-top: 80px;
+    }
+    form#form-carro, #carros-list {
+        max-width: 99vw;
+        padding: 10px;
+    }
+    form#form-carro input, form#form-carro button {
+        flex: 1 1 100%;
+    }
+    .menu-dropdown {
+        left: 6px;
+        min-width: 140px;
+        padding: 8px 0;
+    }
+}

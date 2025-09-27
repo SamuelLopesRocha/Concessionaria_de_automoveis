@@ -1,3 +1,5 @@
+//go run app.go
+
 package main
 
 import (
@@ -7,8 +9,10 @@ import (
 	"time"
 
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/carro"
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/compra"
+    "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/funcionario"
+    "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/venda"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
-	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/funcionario"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -18,13 +22,14 @@ func main() {
 	config.ConnectDatabase()
 
 	// Migra os modelos
-	if err := config.DB.AutoMigrate(&carro.Carro{}, &funcionario.Funcionario{}); err != nil {
+	if err := config.DB.AutoMigrate(&carro.Carro{}, &funcionario.Funcionario{}, &compra.Compra{}, &venda.Venda{}); err != nil {
 		log.Fatalf("Erro ao migrar modelos: %v", err)
 	}
 
 	// Roteador
 	r := gin.Default()
 
+<<<<<<< HEAD
 	// CORS: configuração para desenvolvimento
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5500", "http://127.0.0.1:5500"}, // ajuste conforme porta do seu frontend
@@ -60,6 +65,8 @@ func main() {
 	// Rotas
 	carro.CarroRoutes(r)
 	funcionario.FuncRoutes(r)
+	compra.CompraRoutes(r)
+    venda.VendaRoutes(r)
 
 	// Health check simples
 	r.GET("/health", func(c *gin.Context) {
@@ -74,7 +81,7 @@ func main() {
 	})
 
 	log.Println("API ouvindo em http://localhost:5001")
-	if err := r.Run(":5001"); err != nil {
+	if err := r.Run("0.0.0.0:5001"); err != nil {
 		fmt.Println("Falha ao iniciar servidor:", err)
 	}
 }

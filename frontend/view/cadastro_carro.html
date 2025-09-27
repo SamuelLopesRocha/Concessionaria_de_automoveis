@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concessionária</title>
+    <link rel="stylesheet" href="carro.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar simple-nav">
+        <div class="nav-left">
+            <span class="logo">🚗</span>
+            <span class="nav-title">Concessionária</span>
+        </div>
+        <ul class="nav-links">
+            <li><a class="active" href="carro.html">Carros</a></li>
+            <li><a href="func.html">Funcionários</a></li>
+        </ul>
+    </nav>
+  <div class="main-content">
+      <h1>Bem-vindo à Concessionária</h1>
+      <form id="form-carro">
+          <input type="text" id="placa" placeholder="Placa" required>
+          <input type="text" id="cor" placeholder="Cor" required>
+          <input type="text" id="marca" placeholder="Marca" required>
+          <input type="text" id="modelo" placeholder="Modelo" required>
+          <input type="text" id="ano" placeholder="Ano" required>
+          <input type="text" id="valor" placeholder="Valor" required> 
+          <input type="text" id="km" placeholder="Km" required>
+
+          <button type="submit">Cadastrar</button>
+          <button type="button" id="btn-buscar">Buscar</button>
+          <button type="button" id="btn-atualizar">Atualizar</button>
+          <button type="button" id="btn-deletar">Deletar</button>
+      </form>
+      
+      <h2>Lista de Carros</h2>
+      <ul id="carros-list">
+          <!-- Lista de carros será inserida aqui -->
+      </ul>
+  </div>
+  <script src="carro.js"></script>
+</body>     
+</html>
+
+
