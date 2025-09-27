@@ -4,20 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Concessionária</title>
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="carro.css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,800&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar">
-    <span class="logo" id="logo-btn" style="cursor:pointer;">🚗</span>
-    <span class="nav-title">Concessionária</span>
-  </nav>
-  <ul class="menu-dropdown" id="menu-dropdown">
-      <li><a href="#" id="menu-cadastro">Cadastro</a></li>
-      <li><a href="#" id="menu-atualizar">Atualizar</a></li>
-      <li><a href="#" id="menu-buscar">Buscar</a></li>
-      <li><a href="#" id="menu-deletar">Deletar</a></li>
-  </ul>
+    <nav class="navbar simple-nav">
+        <div class="nav-left">
+            <span class="logo">🚗</span>
+            <span class="nav-title">Concessionária</span>
+        </div>
+        <ul class="nav-links">
+            <li><a class="active" href="carro.html">Carros</a></li>
+            <li><a href="func.html">Funcionários</a></li>
+        </ul>
+    </nav>
   <div class="main-content">
       <h1>Bem-vindo à Concessionária</h1>
       <form id="form-carro">
@@ -40,7 +40,7 @@
           <!-- Lista de carros será inserida aqui -->
       </ul>
   </div>
-  <script src="index.js"></script>
+  <script src="carro.js"></script>
 </body>     
 </html>
 

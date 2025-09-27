@@ -1,6 +1,5 @@
 package funcionario
 
-
 import "github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
 
 // Buscar todos os funcionarios
@@ -24,6 +23,15 @@ func GetFuncByID(id string) (*Funcionario, error) {
 		return nil, result.Error
 	}
 	return &funci, nil
+}
+
+// evitar duplicidade do CPF
+func GetFuncByCPF(cpf string) (*Funcionario, error) {
+	var f Funcionario
+	if err := config.DB.Where("cpf = ?", cpf).First(&f).Error; err != nil {
+		return nil, err
+	}
+	return &f, nil
 }
 
 // Atualizar funcionario

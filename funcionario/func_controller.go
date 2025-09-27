@@ -8,61 +8,53 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// ===== Validações =====
 
-// Valida o nome (obrigatório e apenas string)
 func ValidarNome(nome string) bool {
 	nome = strings.TrimSpace(nome)
 	if len(nome) == 0 {
-		return false // obrigatório
+		return false
 	}
 	re := regexp.MustCompile(`^[A-Za-zÀ-ÿ\s]+$`)
 	return re.MatchString(nome)
 }
 
-// Valida o cargo (obrigatório e apenas string)
 func ValidarCargo(cargo string) bool {
 	cargo = strings.TrimSpace(cargo)
 	if len(cargo) == 0 {
-		return false // obrigatório
+		return false
 	}
 	re := regexp.MustCompile(`^[A-Za-zÀ-ÿ\s]+$`)
 	return re.MatchString(cargo)
 }
 
-
-// Padroniza CPF (remove pontos e traços)
 func PadronizarCPF(cpf string) string {
-    cpf = strings.TrimSpace(cpf)
-    cpf = strings.ReplaceAll(cpf, ".", "")
-    cpf = strings.ReplaceAll(cpf, "-", "")
-    return cpf
+	cpf = strings.TrimSpace(cpf)
+	cpf = strings.ReplaceAll(cpf, ".", "")
+	cpf = strings.ReplaceAll(cpf, "-", "")
+	return cpf
 }
 
-// Valida CPF (obrigatório, deve ter 11 dígitos após padronização)
 func ValidarCPF(cpf string) bool {
-    cpf = PadronizarCPF(cpf)
-    if len(cpf) == 0 {
-        return false // obrigatório
-    }
-    re := regexp.MustCompile(`^[0-9]{11}$`)
-    return re.MatchString(cpf)
+	cpf = PadronizarCPF(cpf)
+	re := regexp.MustCompile(`^[0-9]{11}$`)
+	return re.MatchString(cpf)
 }
 
-// Valida idade
 func ValidarIdade(idade int) bool {
-    return idade > 0
+	return idade >= 16 && idade <= 100
 }
 
+// ===== Handlers =====
 
 func GetFuncs(c *gin.Context) {
 	funcs, err := GetAllFuncs()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar os funcionarios"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao buscar funcionários"})
 		return
 	}
 	c.JSON(http.StatusOK, funcs)
 }
-
 
 func CreateFunc_C(c *gin.Context) {
 	var novoFunc Funcionario
@@ -71,127 +63,111 @@ func CreateFunc_C(c *gin.Context) {
 		return
 	}
 
-	// Validação do nome
 	if !ValidarNome(novoFunc.Nome) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Nome inválido. Use apenas letras e espaços"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Nome inválido"})
 		return
 	}
-
-	// Validação do cargo
 	if !ValidarCargo(novoFunc.Cargo) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Cargo inválido. Use apenas letras e espaços"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Cargo inválido"})
+		return
+	}
+	if !ValidarCPF(novoFunc.Cpf) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "CPF inválido"})
+		return
+	}
+	novoFunc.Cpf = PadronizarCPF(novoFunc.Cpf)
+
+	if !ValidarIdade(novoFunc.Idade) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Idade inválida"})
 		return
 	}
 
-	// Validação do CPF
-    if !ValidarCPF(novoFunc.Cpf) {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "CPF inválido. Digite apenas números ou no formato 000.000.000-00"})
-        return
-    }
-    novoFunc.Cpf = PadronizarCPF(novoFunc.Cpf) 
+	if _, err := GetFuncByCPF(novoFunc.Cpf); err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "CPF já cadastrado"})
+		return
+	}
 
-	 // Validação da idade
-    if !ValidarIdade(novoFunc.Idade) {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "Idade inválida. Deve ser um número maior que zero"})
-        return
-    }
-
-	// Função de criar no banco
 	if err := CreateFunc(&novoFunc); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar o funcionário"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar funcionário"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"message": "Funcionário criado com sucesso"})
+	c.JSON(http.StatusCreated, gin.H{
+		"message":     "Funcionário criado com sucesso",
+		"funcionario": novoFunc,
+	})
 }
 
 func GetFuncByID_C(c *gin.Context) {
-	id := c.Param("id")
-
-	
-	if strings.TrimSpace(id) == "" {
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
 		return
 	}
 
-
 	funcEncontrado, err := GetFuncByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Funcionario não encontrado"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Funcionário não encontrado"})
 		return
 	}
 
 	c.JSON(http.StatusOK, funcEncontrado)
 }
 
-// Atualizar funcionário
 func UpdateFunc_C(c *gin.Context) {
-	id := c.Param("id")
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
+		return
+	}
 
-	// Busca o funcionário no banco
-	funcionarioEncontrado, err := GetFuncByID(id)
+	funcDB, err := GetFuncByID(id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Funcionário não encontrado"})
 		return
 	}
 
-	// Faz o bind dos novos dados para o objeto existente
-	if err := c.ShouldBindJSON(&funcionarioEncontrado); err != nil {
+	var body struct {
+		Nome  string `json:"nome"`
+		Cargo string `json:"cargo"`
+		Idade int    `json:"idade"`
+		Cpf   string `json:"cpf"` // ignorado na atualização
+	}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
 		return
 	}
 
-	// Garante que o ID não seja alterado
-	funcionarioEncontrado.Id = funcionarioEncontrado.Id
-
-	// Validação do nome
-	if !ValidarNome(funcionarioEncontrado.Nome) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Nome inválido. Use apenas letras e espaços"})
+	if !ValidarNome(body.Nome) || !ValidarCargo(body.Cargo) || !ValidarIdade(body.Idade) {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Campos inválidos"})
 		return
 	}
 
-	// Validação do cargo
-	if !ValidarCargo(funcionarioEncontrado.Cargo) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Cargo inválido. Use apenas letras e espaços"})
+	funcDB.Nome = body.Nome
+	funcDB.Cargo = body.Cargo
+	funcDB.Idade = body.Idade
+
+	if err := UpdateFunc(funcDB); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar funcionário"})
 		return
 	}
 
-	// Validação do CPF
-	if !ValidarCPF(funcionarioEncontrado.Cpf) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "CPF inválido. Digite apenas números ou no formato 000.000.000-00"})
-		return
-	}
-	funcionarioEncontrado.Cpf = PadronizarCPF(funcionarioEncontrado.Cpf) // salva sem pontuação
-
-	// Validação da idade
-	if !ValidarIdade(funcionarioEncontrado.Idade) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Idade inválida. Deve ser um número maior que zero"})
-		return
-	}
-
-	// Atualiza no banco
-	if err := UpdateFunc(funcionarioEncontrado); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao atualizar o funcionário"})
-		return
-	}
-
-	c.JSON(http.StatusOK, funcionarioEncontrado)
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "Funcionário atualizado com sucesso",
+		"funcionario": funcDB,
+	})
 }
 
-
-// Deletar funcionário
 func DeleteFunc_C(c *gin.Context) {
-	id := c.Param("id")
-
-	// Validação simples do ID (não pode ser vazio)
-	if strings.TrimSpace(id) == "" {
+	id := strings.TrimSpace(c.Param("id"))
+	if id == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID inválido"})
 		return
 	}
 
-	// Excluir funcionário no banco
 	if err := DeleteFunc(id); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar o funcionário"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao deletar funcionário"})
 		return
 	}
 

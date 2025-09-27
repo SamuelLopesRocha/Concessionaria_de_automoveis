@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Funcionários</title>
+    <link rel="stylesheet" href="func.css">
+</head>
+<body>
+    <nav class="navbar simple-nav">
+        <div class="nav-left">
+            <span class="logo">🚗</span>
+            <span class="nav-title">Concessionária</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="carro.html">Carros</a></li>
+            <li><a class="active" href="func.html">Funcionários</a></li>
+        </ul>
+    </nav>
+    <main class="container-func">
+        <h1>Gerenciar Funcionários</h1>
+
+        <form id="form-func" autocomplete="off">
+            <div class="row">
+                <input type="text" id="nome" placeholder="Nome" required>
+                <input type="text" id="cargo" placeholder="Cargo" required>
+            </div>
+            <div class="row">
+                <input type="text" id="cpf" placeholder="CPF (00000000000)" required>
+                <input type="number" id="idade" placeholder="Idade" min="16" max="100" required>
+            </div>
+            <div class="row">
+                <input type="number" id="id-func" placeholder="ID (para buscar / atualizar / deletar)">
+            </div>
+
+            <div class="actions">
+                <button type="submit">Cadastrar</button>
+                <button type="button" id="btn-buscar">Buscar (ID)</button>
+                <button type="button" id="btn-atualizar">Atualizar (ID)</button>
+                <button type="button" id="btn-deletar">Deletar (ID)</button>
+            </div>
+        </form>
+
+        <h2>Lista de Funcionários</h2>
+        <ul id="func-list"></ul>
+    </main>
+
+    <script src="func.js"></script>
+</body>
+</html>

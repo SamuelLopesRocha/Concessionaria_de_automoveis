@@ -143,17 +143,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== MENU DROPDOWN MODERNO =====
 
-document.getElementById("logo-btn").addEventListener("click", function(e) {
-    e.stopPropagation();
-    const menu = document.getElementById("menu-dropdown");
-    menu.classList.toggle("show");
-});
-
-// Fecha o menu se clicar fora dele
-document.addEventListener("click", function(e) {
-    const menu = document.getElementById("menu-dropdown");
-    const logo = document.getElementById("logo-btn");
-    if (!menu.contains(e.target) && e.target !== logo) {
-        menu.classList.remove("show");
-    }
-});
+// (Dropdown removido) Navegação agora fixa simples
