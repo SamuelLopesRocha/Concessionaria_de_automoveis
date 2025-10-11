@@ -5,6 +5,11 @@ const API_FUNC_URL = `${API_HOST}/funcionarios`;
 // ================= Utilidades =================
 const qs = sel => document.querySelector(sel);
 const normalizarCPF = cpf => cpf.replace(/\D/g, "");
+const formatarCPF = cpf => {
+  const numeros = normalizarCPF(cpf);
+  if (numeros.length !== 11) return cpf; // retorna original se não tiver 11 dígitos
+  return numeros.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+};
 const parseId = val => {
   const n = parseInt(val, 10);
   return Number.isNaN(n) ? null : n;
@@ -31,7 +36,7 @@ function fillForm(f) {
   qs('#nome').value = f?.nome || '';
   qs('#cargo').value = f?.cargo || '';
   qs('#idade').value = f?.idade ?? '';
-  qs('#cpf').value = f?.cpf || '';
+  qs('#cpf').value = f?.cpf ? formatarCPF(f.cpf) : '';
   qs('#id-func').value = f?.id ?? '';
 }
 
@@ -99,7 +104,7 @@ function renderLista(funcs) {
   }
   funcs.forEach(f => {
     const li = document.createElement("li");
-    li.textContent = `${f.id} | ${f.nome} | Cargo: ${f.cargo} | Idade: ${f.idade} | CPF: ${f.cpf}`;
+    li.textContent = `${f.id} | ${f.nome} | Cargo: ${f.cargo} | Idade: ${f.idade} | CPF: ${formatarCPF(f.cpf)}`;
     li.style.cursor = "pointer";
     li.onclick = () => fillForm(f);
     ul.appendChild(li);
@@ -187,3 +192,16 @@ qs('#btn-buscar').addEventListener('click', buscarFuncionario);
 qs('#btn-atualizar').addEventListener('click', updateFuncionario);
 qs('#btn-deletar').addEventListener('click', deleteFuncionario);
 document.addEventListener('DOMContentLoaded', getAllFuncionarios);
+
+// Máscara automática para CPF
+qs('#cpf').addEventListener('input', function(e) {
+  const valor = e.target.value;
+  const apenasNumeros = normalizarCPF(valor);
+  
+  // Limita a 11 dígitos
+  if (apenasNumeros.length <= 11) {
+    e.target.value = formatarCPF(apenasNumeros);
+  } else {
+    e.target.value = formatarCPF(apenasNumeros.slice(0, 11));
+  }
+});
