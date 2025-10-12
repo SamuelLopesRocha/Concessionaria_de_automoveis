@@ -7,7 +7,6 @@ type Compra struct {
 	Debito        float32 `json:"debito"`
 	Valor_Parcela float32 `json:"valor_parcela"`
 	Parcelas      int     `json:"parcelas"`
-	Data_Compra   string  `json:"data_compra" gorm:"type:varchar(50)"`
 	Fornecedor    string  `json:"fornecedor" gorm:"type:varchar(100)"`
 
 	// Dados do carro comprado

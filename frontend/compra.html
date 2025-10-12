@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Registro de Compras</title>
+  <link rel="stylesheet" href="compra.css">
+</head>
+<body>
+  <!-- 🔹 NAVBAR -->
+  <nav class="navbar simple-nav">
+    <div class="nav-left">
+      <span class="logo">🚗</span>
+      <span class="nav-title">Concessionária</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="carro.html">Carros</a></li>
+      <li><a href="func.html">Funcionários</a></li>
+      <li><a class="active" href="compra.html">Compras</a></li>
+    </ul>
+  </nav>
+
+  <main class="container-func">
+    <h1>Gerenciar o Registro da Compra</h1>
+
+    <form id="compraForm" autocomplete="off">
+      <h2 id="formTitle" class="section-title">Dados da Compra</h2>
+      <div class="row">
+        <input type="number" step="0.01" name="valor_compra" placeholder="Valor da Compra" required>
+        <input type="number" step="0.01" name="debito" placeholder="Débito">
+      </div>
+      <div class="row">
+        <input type="number" step="0.01" name="valor_parcela" placeholder="Valor da Parcela">
+        <input type="number" name="parcelas" min="1" max="120" placeholder="Parcelas">
+      </div>
+      <div class="row">
+        <input type="text" name="fornecedor" placeholder="Fornecedor" required>
+      </div>
+
+      <h2 class="section-title">Dados do carro</h2>
+      <div class="row">
+        <input type="text" name="placa" placeholder="Placa (ABC-1234)" required>
+        <input type="text" name="cor" placeholder="Cor" required>
+      </div>
+      <div class="row">
+        <input type="text" name="marca" placeholder="Marca" required>
+        <input type="text" name="modelo" placeholder="Modelo" required>
+      </div>
+      <div class="row">
+        <input type="number" step="0.1" name="km" placeholder="KM" required>
+        <input type="number" name="ano" min="1900" max="2030" placeholder="Ano" required>
+      </div>
+
+      <div class="actions">
+        <button type="submit">Salvar</button>
+        <button type="button" id="cancelEdit" class="hidden">Cancelar</button>
+      </div>
+    </form>
+
+    <!-- 🔍 PESQUISAR POR ID -->
+    <div class="search-section">
+      <h2>Pesquisar Compra por ID</h2>
+      <div class="search-box">
+        <input type="number" id="searchId" placeholder="Digite o ID da compra">
+        <button id="btnSearch">Pesquisar</button>
+        <button id="btnReset">Mostrar Todas</button>
+      </div>
+    </div>
+
+    <h2>Lista de Compras</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Fornecedor</th>
+          <th>Placa</th>
+          <th>Valor</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="comprasTableBody"></tbody>
+    </table>
+  </main>
+
+  <script src="compra.js"></script>
+
+  <!-- 🔽 Script da busca -->
+  <script>
+    const searchBtn = document.getElementById("btnSearch");
+    const resetBtn = document.getElementById("btnReset");
+    const searchInput = document.getElementById("searchId");
+
+    searchBtn.addEventListener("click", async () => {
+      const id = searchInput.value.trim();
+      if (!id) {
+        alert("Digite um ID para pesquisar.");
+        return;
+      }
+      try {
+        const res = await fetch(`${API_URL}/${id}`);
+        if (!res.ok) {
+          alert("Compra não encontrada!");
+          return;
+        }
+        const c = await res.json();
+        tableBody.innerHTML = `
+          <tr>
+            <td>${c.id}</td>
+            <td>${c.fornecedor}</td>
+            <td>${c.placa}</td>
+            <td>R$ ${c.valor_compra}</td>
+            <td>
+              <button class="action-btn edit" onclick="editarCompra(${c.id})">Editar</button>
+              <button class="action-btn delete" onclick="deletarCompra(${c.id})">Excluir</button>
+            </td>
+          </tr>`;
+      } catch (err) {
+        alert("Erro ao buscar compra.");
+      }
+    });
+
+    resetBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      carregarCompras();
+    });
+  </script>
+</body>
+</html>
