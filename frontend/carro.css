@@ -1,5 +1,11 @@
 /* Reset e base */
-body, h1, h2, ul, form, input, button {
+body,
+h1,
+h2,
+ul,
+form,
+input,
+button {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -25,7 +31,7 @@ body {
     top: 0;
     left: 0;
     z-index: 10;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .logo {
@@ -34,21 +40,54 @@ body {
     color: #d32f2f;
     user-select: none;
     font-weight: bold;
+    width: 10px;
+
 }
 
 .nav-title {
-    font-size: 1.7rem;
+    font-size: 1.45rem;
     color: #222;
     font-weight: 700;
     letter-spacing: 1.5px;
 }
 
 /* Navegação simples */
-.simple-nav { justify-content: space-between; }
-.nav-links { list-style: none; display: flex; gap: 16px; margin-right: auto; }
-.nav-links li a { text-decoration: none; font-weight:600; color:#444; padding:8px 4px; position:relative; }
-.nav-links li a.active, .nav-links li a:hover { color:#d32f2f; }
-.nav-links li a.active::after, .nav-links li a:hover::after { content:""; position:absolute; left:0; bottom:-4px; height:3px; width:100%; background:#d32f2f; border-radius:2px; }
+.simple-nav {
+    justify-content: space-between;
+}
+
+.nav-links {
+    font-size: 0.9rem;
+    list-style: none;
+    display: flex;
+    gap: 16px;
+    margin-right: 100px;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    font-weight: 600;
+    color: #444;
+    padding: 8px 4px;
+    position: relative;
+}
+
+.nav-links li a.active,
+.nav-links li a:hover {
+    color: #d32f2f;
+}
+
+.nav-links li a.active::after,
+.nav-links li a:hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 3px;
+    width: 100%;
+    background: #d32f2f;
+    border-radius: 2px;
+}
 
 /* Conteúdo principal */
 .main-content {
@@ -81,7 +120,7 @@ form#form-carro {
     margin: 40px auto 28px auto;
     padding: 40px 36px 32px 36px;
     border-radius: 18px;
-    box-shadow: 0 4px 24px rgba(30,30,60,0.09);
+    box-shadow: 0 4px 24px rgba(30, 30, 60, 0.09);
     display: flex;
     flex-wrap: wrap;
     gap: 22px;
@@ -114,13 +153,13 @@ form#form-carro button {
     font-weight: 700;
     cursor: pointer;
     transition: background 0.2s, box-shadow 0.2s;
-    box-shadow: 0 2px 8px rgba(30,30,60,0.08);
+    box-shadow: 0 2px 8px rgba(30, 30, 60, 0.08);
     letter-spacing: 1px;
 }
 
 form#form-carro button:hover {
     background: linear-gradient(90deg, #b71c1c 60%, #d32f2f 100%);
-    box-shadow: 0 4px 16px rgba(30,30,60,0.13);
+    box-shadow: 0 4px 16px rgba(30, 30, 60, 0.13);
 }
 
 /* Lista de carros */
@@ -151,7 +190,7 @@ form#form-carro button:hover {
 }
 
 #carros-list li:hover {
-    box-shadow: 0 4px 16px rgba(30,30,60,0.13);
+    box-shadow: 0 4px 16px rgba(30, 30, 60, 0.13);
     border-left: 7px solid #232323;
 }
 
@@ -161,16 +200,22 @@ form#form-carro button:hover {
         padding: 0 10px;
         height: 56px;
     }
+
     .main-content {
         margin-top: 80px;
     }
-    form#form-carro, #carros-list {
+
+    form#form-carro,
+    #carros-list {
         max-width: 99vw;
         padding: 10px;
     }
-    form#form-carro input, form#form-carro button {
+
+    form#form-carro input,
+    form#form-carro button {
         flex: 1 1 100%;
     }
+
     .menu-dropdown {
         left: 6px;
         min-width: 140px;
