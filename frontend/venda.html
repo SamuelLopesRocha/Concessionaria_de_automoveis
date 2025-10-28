@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Registro de Compras</title>
+  <title>Registro de Vendas</title>
   <link rel="stylesheet" href="compra.css">
 </head>
 <body>
@@ -16,18 +16,18 @@
     <ul class="nav-links">
       <li><a href="carro.html">Carros</a></li>
       <li><a href="func.html">Funcionários</a></li>
-      <li><a class="active" href="compra.html">Compras</a></li>
-      <li><a href="venda.html">Vendas</a></li>
+        <li><a href="compra.html">Compras</a></li>
+      <li><a class="active" href="venda.html">Vendas</a></li>
     </ul>
   </nav>
 
   <main class="container-func">
-    <h1>Registro de Compras</h1>
+    <h1>Registro de Vendas</h1>
 
-    <form id="compraForm" autocomplete="off">
-      <h2 id="formTitle" class="section-title">Dados da Compra</h2>
+    <form id="vendaForm" autocomplete="off">
+      <h2 id="formTitle" class="section-title">Dados do pagamento</h2>
       <div class="row">
-        <input type="number" step="0.01" name="valor_compra" placeholder="Valor da Compra" required>
+        <input type="number" step="0.01" name="valor_venda" placeholder="Valor da Venda" required>
         <input type="number" step="0.01" name="debito" placeholder="Débito">
       </div>
       <div class="row">
@@ -35,22 +35,26 @@
         <input type="number" name="parcelas" min="1" max="120" placeholder="Parcelas">
       </div>
       <div class="row">
-        <input type="text" name="fornecedor" placeholder="Fornecedor" required>
+        <input type="text" name="desconto" placeholder="Desconto" required>
+        <input type="text" name="juros" placeholder="Juros" required>
+      </div>
+      <div class="row">
+        <input type="text" name="valor_total" placeholder="Valor Final" readonly>
+        <input type="text" name="comissao_vendedor" placeholder="Comissão Vendedor" readonly>
       </div>
 
-      <h2 class="section-title">Dados do carro</h2>
+
+
+      <h2 class="section-title">Dados da venda</h2>
       <div class="row">
-        <input type="text" name="placa" placeholder="Placa (ABC-1234)" required>
-        <input type="text" name="cor" placeholder="Cor" required>
+        <input type="text" name="data_venda" placeholder="Data (ex: 10/10/2020)" required>
+        <input type="text" name="id_vendedor" placeholder="ID Vendedor" required>
       </div>
       <div class="row">
-        <input type="text" name="marca" placeholder="Marca" required>
-        <input type="text" name="modelo" placeholder="Modelo" required>
+        <input type="text" name="id_carro" placeholder="ID Carro" required>
+        <input type="text" name="cpf" placeholder="CPF Cliente" required>
       </div>
-      <div class="row">
-        <input type="number" step="0.1" name="km" placeholder="KM" required>
-        <input type="number" name="ano" min="1900" max="2030" placeholder="Ano" required>
-      </div>
+    
 
       <div class="actions">
         <button type="submit">Salvar</button>
@@ -60,15 +64,15 @@
 
     <!-- 🔍 PESQUISAR POR ID -->
     <div class="search-section">
-      <h2>Pesquisar Compra por ID</h2>
+      <h2>Pesquisar Venda por ID</h2>
       <div class="search-box">
-        <input type="number" id="searchId" placeholder="Digite o ID da compra">
+        <input type="number" id="searchId" placeholder="Digite o ID da venda">
         <button id="btnSearch">Pesquisar</button>
         <button id="btnReset">Mostrar Todas</button>
       </div>
     </div>
 
-    <h2>Lista de Compras</h2>
+    <h2>Lista de Vendas</h2>
     <table>
       <thead>
         <tr>
@@ -79,11 +83,11 @@
           <th>Ações</th>
         </tr>
       </thead>
-      <tbody id="comprasTableBody"></tbody>
+      <tbody id="vendasTableBody"></tbody>
     </table>
   </main>
 
-  <script src="compra.js"></script>
+  <script src="venda.js"></script>
 
   <!-- 🔽 Script da busca -->
   <script>
@@ -122,7 +126,7 @@
 
     resetBtn.addEventListener("click", () => {
       searchInput.value = "";
-      carregarCompras();
+      carregarVendas();
     });
   </script>
 </body>

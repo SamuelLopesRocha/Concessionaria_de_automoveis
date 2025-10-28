@@ -5,8 +5,10 @@ type Venda struct {
 	IDCarro          uint    `json:"id_carro"`
 	IDVendedor       uint    `json:"id_vendedor"`
 	DataVenda        string  `json:"data_venda"`
+	Valor_Venda  	float32 `json:"valor_venda" gorm:"not null"`
 	ValorTotal       float64 `json:"valor_total"`
-	FormaPagamento   string  `json:"forma_pagamento"` // "à vista" ou "parcelado"
+	Debito        	float32 `json:"debito"`
+	Valor_Parcela 	float32 `json:"valor_parcela"`
 	Parcelas         int     `json:"parcelas"`        // se parcelado
 	Juros            float64 `json:"juros"`           // percentual
 	Desconto         float64 `json:"desconto"`
