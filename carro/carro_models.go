@@ -1,7 +1,7 @@
 package carro
 
 type Carro struct {
-    Placa  string `json:"placa" gorm:"primaryKey" binding:"required"` // Placa obrigatória
+    Placa  string `json:"placa" gorm:"primaryKey" ` // Placa obrigatória
     Cor    string `json:"cor" gorm:"type:varchar(100);not null"`
     Marca  string `json:"marca" gorm:"type:varchar(100);not null"`
     Modelo string `json:"modelo" gorm:"type:varchar(100);not null"`

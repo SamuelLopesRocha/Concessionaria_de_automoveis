@@ -27,7 +27,7 @@
     <form id="vendaForm" autocomplete="off">
       <h2 id="formTitle" class="section-title">Dados do pagamento</h2>
       <div class="row">
-        <input type="number" step="0.01" name="valor_venda" placeholder="Valor da Venda" required>
+        <input type="number" id="valor_venda" step="0.01" name="valor_venda" placeholder="Valor da Venda" required>
         <input type="number" step="0.01" name="debito" placeholder="Débito">
       </div>
       <div class="row">
@@ -35,12 +35,12 @@
         <input type="number" name="parcelas" min="1" max="120" placeholder="Parcelas">
       </div>
       <div class="row">
-        <input type="text" name="desconto" placeholder="Desconto" required>
-        <input type="text" name="juros" placeholder="Juros" required>
+        <input type="number" id="desconto" name="desconto" placeholder="Desconto em porcentagem(ex: 10)" required>
+        <input type="number" id="juros" name="juros" placeholder="Juros em porcentagem(ex: 10)" required>
       </div>
       <div class="row">
-        <input type="text" name="valor_total" placeholder="Valor Final" readonly>
-        <input type="text" name="comissao_vendedor" placeholder="Comissão Vendedor" readonly>
+        <input type="number" id="valor_total" name="valor_total" placeholder="Valor Final" readonly>
+        <input type="number" id="comissao_vendedor" name="comissao_vendedor" placeholder="Comissão Vendedor" readonly>
       </div>
 
 
@@ -48,10 +48,10 @@
       <h2 class="section-title">Dados da venda</h2>
       <div class="row">
         <input type="text" name="data_venda" placeholder="Data (ex: 10/10/2020)" required>
-        <input type="text" name="id_vendedor" placeholder="ID Vendedor" required>
+        <input type="number" name="id_funcionario" placeholder="ID Vendedor" required>
       </div>
       <div class="row">
-        <input type="text" name="id_carro" placeholder="ID Carro" required>
+        <input type="text" name="id_carro" placeholder="Placa do Carro" required>
         <input type="text" name="cpf" placeholder="CPF Cliente" required>
       </div>
     
@@ -77,8 +77,9 @@
       <thead>
         <tr>
           <th>ID</th>
-          <th>Fornecedor</th>
-          <th>Placa</th>
+          <th>Data</th>
+          <th>Carro</th>
+          <th>Vendedor</th>
           <th>Valor</th>
           <th>Ações</th>
         </tr>
@@ -91,43 +92,7 @@
 
   <!-- 🔽 Script da busca -->
   <script>
-    const searchBtn = document.getElementById("btnSearch");
-    const resetBtn = document.getElementById("btnReset");
-    const searchInput = document.getElementById("searchId");
-
-    searchBtn.addEventListener("click", async () => {
-      const id = searchInput.value.trim();
-      if (!id) {
-        alert("Digite um ID para pesquisar.");
-        return;
-      }
-      try {
-        const res = await fetch(`${API_URL}/${id}`);
-        if (!res.ok) {
-          alert("Compra não encontrada!");
-          return;
-        }
-        const c = await res.json();
-        tableBody.innerHTML = `
-          <tr>
-            <td>${c.id}</td>
-            <td>${c.fornecedor}</td>
-            <td>${c.placa}</td>
-            <td>R$ ${c.valor_compra}</td>
-            <td>
-              <button class="action-btn edit" onclick="editarCompra(${c.id})">Editar</button>
-              <button class="action-btn delete" onclick="deletarCompra(${c.id})">Excluir</button>
-            </td>
-          </tr>`;
-      } catch (err) {
-        alert("Erro ao buscar compra.");
-      }
-    });
-
-    resetBtn.addEventListener("click", () => {
-      searchInput.value = "";
-      carregarVendas();
-    });
+    
   </script>
 </body>
 </html>

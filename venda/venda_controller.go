@@ -1,8 +1,8 @@
 package venda
 
 import (
+	"fmt"
 	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,10 +16,12 @@ func GetVendas(c *gin.Context) {
 	c.JSON(http.StatusOK, vendas)
 }
 
+
 // Criar novos registros de venda
 func CreateVenda_C(c *gin.Context) {
 	var novaVenda Venda
 	if err := c.ShouldBindJSON(&novaVenda); err != nil {
+		fmt.Println("Erro de Bind JSON:", err)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Dados inválidos"})
 		return
 	}
@@ -35,6 +37,7 @@ func CreateVenda_C(c *gin.Context) {
 
 // Buscar registros de venda por ID
 func GetVendaByID_C(c *gin.Context) {
+	
 	id := c.Param("id")
 
 	vendaEncontrada, err := GetVendaById(id)
@@ -80,3 +83,4 @@ func DeleteVenda_C(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "registro de venda deletado com sucesso"})
 }
+
