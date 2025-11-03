@@ -13,8 +13,8 @@ async function carregarVendas() {
     data.forEach(c => {
       const row = document.createElement('tr')
 
-      const nomeCarro = c.Carro ? `${c.Carro.marca} ${c.Carro.modelo}` : 'N/A'
-      const nomeFuncionario = c.Funcionario ? c.Funcionario.nome : 'N/A'
+      const nomeCarro = c.carro ? `${c.carro.marca} ${c.carro.modelo}` : 'N/A'
+      const nomeFuncionario = c.funcionario ? c.funcionario.nome : 'N/A'
 
       row.innerHTML = `
         <td>${c.id_venda}</td>
