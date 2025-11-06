@@ -10,108 +10,232 @@ from datetime import datetime
 # 1. CONFIGURAÇÃO E CREDENCIAIS
 # ==============================================================================
 
-st.set_page_config(layout="wide")
-st.title("📊 Dashboard de Estoque e Performance da Concessionária")
+st.set_page_config(layout="wide", page_title="Dashboard de Gestão da Concessionária")
+st.title("📊 Dashboard de Gestão da Concessionária")
 st.markdown("---")
 
-# ATENÇÃO: Se a senha ou host mudarem, ajuste APENAS aqui.
+# ATENÇÃO: ajuste as credenciais somente aqui, se necessário
 DB_HOST = "db.lbyvnjpkbqnvgeulddxg.supabase.co"
 DB_DATABASE = "postgres"
 DB_USER = "postgres"
-DB_PASSWORD = "kHnc7evFFcP5HZ8j"  # << SUA SENHA ESTÁ AQUI
+DB_PASSWORD = "kHnc7evFFcP5HZ8j"
 DB_PORT = "5432"
 
 # ==============================================================================
-# 2. FUNÇÃO DE CARGA DE DADOS
+# 2. FUNÇÕES DE CARGA DE DADOS
 # ==============================================================================
 
-# O cache evita que a consulta ao BD seja refeita a cada clique/interação
 @st.cache_data(ttl=600)
 def get_carro_data_from_postgres():
-    conn = None 
+    """Obtém os dados de carros (estoque) do banco de dados PostgreSQL hospedado no Supabase."""
+    conn = None
     try:
-        # Conexão
         conn_string = f"dbname={DB_DATABASE} user={DB_USER} password={DB_PASSWORD} host={DB_HOST} port={DB_PORT}"
         conn = psycopg.connect(conn_string)
-        
-        # Consulta SQL focada em CARROS (Estoque)
-        # ATENÇÃO: Ajustei 'id' para 'carro_id' e 'valor' para 'preco' 
-        # para tentar corrigir os erros de coluna do PostgreSQL.
+
         query = """
         SELECT 
-            placa,  
+            placa, 
             marca, 
             modelo, 
             ano, 
             cor, 
-            valor,  
+            valor, 
             km
         FROM carros  
         ORDER BY marca, modelo;
         """
-        
-        # Executa a consulta e armazena em DataFrame
+
         df = pd.read_sql(query, conn)
-        
         return df
-    
+
     except OperationalError as e:
-        st.error(f"⚠️ Erro de Conexão: Verifique as credenciais ou o status do Supabase. Detalhe: {e}")
+        st.error(f"⚠️ Erro de conexão com o banco de dados. Detalhes: {e}")
         return pd.DataFrame()
     except Exception as e:
-        # Este erro pegará o erro de coluna, como o anterior
-        st.error(f"❌ Erro ao buscar dados: {e}") 
+        st.error(f"❌ Erro ao buscar dados: {e}")
+        st.info("Verifique se as colunas 'placa' e 'valor' existem na tabela 'carros'.")
         return pd.DataFrame()
     finally:
         if conn:
-            conn.close() 
+            conn.close()
+
+@st.cache_data(ttl=600)
+def get_funcionarios_data_from_postgres():
+    """Obtém dados de funcionários (a ser implementado)."""
+    conn = None
+    try:
+        conn_string = f"dbname={DB_DATABASE} user={DB_USER} password={DB_PASSWORD} host={DB_HOST} port={DB_PORT}"
+        conn = psycopg.connect(conn_string)
+
+        query = """
+        SELECT 
+            id, 
+            cpf, 
+            nome, 
+            cargo, 
+            idade
+        FROM funcionarios  
+        ORDER BY nome, cargo;
+        """
+
+        df = pd.read_sql(query, conn)
+        return df
+
+    except OperationalError as e:
+        st.error(f"⚠️ Erro de Conexão: {e}")
+        return pd.DataFrame()
+    finally:
+        if conn:
+            conn.close()
 
 # ==============================================================================
-# 3. LAYOUT DO DASHBOARD
+# 3. NAVEGAÇÃO HORIZONTAL (ROTEAMENTO)
 # ==============================================================================
 
-df_carro = get_carro_data_from_postgres()
+dashboard_selecionado = st.radio(
+    "Selecione o Dashboard:",
+    ("Carros (Estoque)", "Vendas", "Funcionários", "Comparativo"),
+    horizontal=True,
+    key="main_navigation"
+)
 
-if not df_carro.empty:
-    st.success(f"Estoque de Carros carregado com sucesso em {datetime.now().strftime('%H:%M:%S')}. Total de {len(df_carro)} veículos.")
-    st.markdown("---")
+st.markdown("---")
 
-    # 1. KPIs (Métricas Chave)
-    col1, col2, col3 = st.columns(3)
-    
-    # KPI 1: Total em Estoque
-    col1.metric(label="Total de Veículos no Estoque", value=len(df_carro))
-    
-    # KPI 2: Valor Total do Estoque (usando a coluna 'valor' renomeada)
-    valor_total = df_carro['valor'].sum()
-    col2.metric(label="Valor Total de Estoque (R$)", value=f"R$ {valor_total:,.2f}")
+# ==============================================================================
+# 4. CONTEÚDO DOS DASHBOARDS
+# ==============================================================================
 
-    # KPI 3: Preço Médio
-    preco_medio = df_carro['valor'].mean()
-    col3.metric(label="Preço Médio por Carro (R$)", value=f"R$ {preco_medio:,.2f}")
+# --------------------------------------------------------------------------
+# CARROS (ESTOQUE)
+# --------------------------------------------------------------------------
+if dashboard_selecionado == "Carros (Estoque)":
 
-    st.markdown("---")
+    st.subheader("🚗 Dashboard de Estoque de Veículos")
+    df_carro = get_carro_data_from_postgres()
 
-    # 2. Gráfico: Distribuição por Marca (Conforme as Estatísticas Detalhadas que você deseja)
-    st.subheader("Distribuição de Veículos por Marca")
-    contagem_marca = df_carro['marca'].value_counts().reset_index()
-    contagem_marca.columns = ['Marca', 'Contagem']
+    if not df_carro.empty:
+        st.success(f"✅ Dados carregados com sucesso em {datetime.now().strftime('%H:%M:%S')}. Total: {len(df_carro)} veículos.")
+        st.markdown("---")
 
-    fig = px.pie(
-        contagem_marca, 
-        values='Contagem', 
-        names='Marca', 
-        title='Percentual de Carros no Estoque',
-        hole=.3
-    )
-    st.plotly_chart(fig, use_container_width=True)
+        # KPIs
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Total de Veículos", len(df_carro))
+        col2.metric("Valor Total de Estoque (R$)", f"R$ {df_carro['valor'].sum():,.2f}")
+        col3.metric("Preço Médio por Carro (R$)", f"R$ {df_carro['valor'].mean():,.2f}")
 
-    st.markdown("---")
-    
-    # 3. Dados Brutos
-    st.subheader("Dados Brutos do Estoque")
-    st.dataframe(df_carro)
+        st.markdown("---")
 
-else:
-    # Mensagem exibida em caso de erro na conexão ou na consulta
-    st.info("Não foi possível carregar dados da tabela 'carros'. Verifique os erros acima e o nome das colunas.")
+        # Gráfico de Distribuição por Marca
+        st.subheader("Distribuição de Veículos por Marca")
+        contagem_marca = df_carro['marca'].value_counts().reset_index()
+        contagem_marca.columns = ['Marca', 'Quantidade']
+
+        fig = px.pie(
+            contagem_marca,
+            values='Quantidade',
+            names='Marca',
+            title='Percentual de Carros no Estoque',
+            hole=0.3
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.markdown("---")
+
+        # Dados Brutos
+        st.subheader("📋 Dados Brutos do Estoque")
+        st.dataframe(df_carro, use_container_width=True)
+
+    else:
+        st.warning("⚠️ Estoque vazio ou erro na consulta. Verifique o banco de dados.")
+
+# --------------------------------------------------------------------------
+# VENDAS
+# --------------------------------------------------------------------------
+elif dashboard_selecionado == "Vendas":
+    st.subheader("💰 Dashboard de Vendas")
+    st.info("Em desenvolvimento: Esta seção exibirá receita, número de carros vendidos e ticket médio.")
+
+# --------------------------------------------------------------------------
+# FUNCIONÁRIOS
+# --------------------------------------------------------------------------
+elif dashboard_selecionado == "Funcionários":
+    st.subheader("👥 Dashboard de Funcionários")
+
+    df_func = get_funcionarios_data_from_postgres()
+
+    if not df_func.empty:
+        st.success(f"Dados de {len(df_func)} funcionários carregados.")
+        st.markdown("---")
+
+        # ============================================
+        # 1. Coluna: Contagem por Cargo
+        # ============================================
+        st.subheader("📌 Funcionários por Cargo")
+
+        contagem_cargo = df_func['cargo'].value_counts().reset_index()
+        contagem_cargo.columns = ['Cargo', 'Quantidade']
+
+        fig_cargo = px.bar(
+            contagem_cargo,
+            x='Cargo',
+            y='Quantidade',
+            title='Distribuição de Funcionários por Cargo',
+            text='Quantidade',
+        )
+        fig_cargo.update_layout(xaxis_title="Cargo", yaxis_title="Quantidade")
+        st.plotly_chart(fig_cargo, use_container_width=True)
+
+        st.markdown("---")
+
+        # ============================================
+        # 2. Gráfico: Faixa Etária
+        # ============================================
+        st.subheader("🎂 Distribuição de Idade dos Funcionários")
+
+        fig_idade = px.histogram(
+            df_func,
+            x='idade',
+            nbins=10,
+            title='Histograma de Idades',
+            labels={'idade': 'Idade'},
+        )
+        st.plotly_chart(fig_idade, use_container_width=True)
+
+        st.markdown("---")
+
+        # ============================================
+        # 3. Gráfico: Idade Média por Cargo
+        # ============================================
+        st.subheader("📊 Idade Média por Cargo")
+
+        idade_media_por_cargo = df_func.groupby('cargo')['idade'].mean().reset_index()
+        idade_media_por_cargo.columns = ['Cargo', 'Idade Média']
+
+        fig_idade_cargo = px.bar(
+            idade_media_por_cargo,
+            x='Cargo',
+            y='Idade Média',
+            title='Idade Média por Cargo',
+            text='Idade Média',
+        )
+        fig_idade_cargo.update_traces(texttemplate='%{text:.1f}')
+        st.plotly_chart(fig_idade_cargo, use_container_width=True)
+
+        st.markdown("---")
+
+        # ============================================
+        # 4. Tabela Bruta
+        # ============================================
+        st.subheader("📋 Dados dos Funcionários")
+        st.dataframe(df_func, use_container_width=True)
+
+    else:
+        st.warning("Nenhum dado encontrado ou funcionalidade ainda em desenvolvimento.")
+
+# --------------------------------------------------------------------------
+# COMPARATIVO
+# --------------------------------------------------------------------------
+elif dashboard_selecionado == "Comparativo":
+    st.subheader("📈 Comparativo de Estatísticas")
+    st.info("Em desenvolvimento: esta seção permitirá comparar desempenho de vendedores ou modelos de carros.")
