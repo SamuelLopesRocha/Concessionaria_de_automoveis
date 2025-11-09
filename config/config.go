@@ -9,7 +9,7 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	// Pegue a connection string no painel do Supabase
-	dsn := "postgresql://postgres:kHnc7evFFcP5HZ8j@db.lbyvnjpkbqnvgeulddxg.supabase.co:5432/postgres"
+	dsn := "postgresql://postgres:faculdadeimpacta@db.mbpgssybkzbklyywjuwt.supabase.co:5432/postgres"
 
 	// Abre a conexão com PreferSimpleProtocol para evitar erro de prepared statement
 	database, err := gorm.Open(postgres.New(postgres.Config{

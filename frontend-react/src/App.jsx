@@ -25,7 +25,7 @@ export default function App() {
           <NavLink to="/compras">Compras</NavLink>
           <NavLink to="/vendas">Vendas</NavLink>
           <NavLink to="/vendas">Vendas</NavLink>
-          <a href="http://localhost:8502" target="_blank" rel="noopener noreferrer">Dashboards</a>
+          <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer">Dashboards</a>
         </nav>
       </header>
       <main className="container">
