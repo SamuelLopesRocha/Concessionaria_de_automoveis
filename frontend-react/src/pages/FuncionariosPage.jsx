@@ -44,36 +44,47 @@ export default function FuncionariosPage(){
     catch(e){ console.error(e); alert(e.response?.data?.error || 'Erro ao deletar') }
   }
 
+  // Estilos para Inputs e Grid
+  const styles = {
+    row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '15px' },
+    group: { display: 'flex', flexDirection: 'column', gap: '8px' },
+    input: { padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#111827', color: 'white', outline:'none', width:'100%' },
+    label: { fontSize: '0.9rem', color: '#9ca3af' }
+  }
+
   return (
     <div className="grid">
       <section className="card" style={{gridColumn:'span 5'}}>
-        <h2>Funcionários</h2>
-        <p style={{color:'var(--muted)'}}>Cadastre e gerencie sua equipe.</p>
-        <div className="row">
-          <div>
-            <label>Nome</label>
-            <input value={form.nome} onChange={e=>setForm(f=>({...f,nome:e.target.value}))} placeholder="Nome" />
+        <h2 style={{marginBottom:'5px'}}>Funcionários</h2>
+        <p style={{color:'var(--muted)', marginBottom:'20px'}}>Cadastre e gerencie sua equipe.</p>
+        
+        <div style={styles.group}>
+            <label style={styles.label}>Nome</label>
+            <input style={styles.input} value={form.nome} onChange={e=>setForm(f=>({...f,nome:e.target.value}))} placeholder="Nome completo" />
+        </div>
+
+        <div style={{...styles.group, marginTop:'15px'}}>
+            <label style={styles.label}>Cargo</label>
+            <input style={styles.input} value={form.cargo} onChange={e=>setForm(f=>({...f,cargo:e.target.value}))} placeholder="Ex: Vendedor" />
+        </div>
+
+        <div style={{...styles.row, marginTop:'15px'}}>
+          <div style={styles.group}>
+            <label style={styles.label}>Idade</label>
+            <input style={styles.input} type="number" value={form.idade} onChange={e=>setForm(f=>({...f,idade:e.target.value}))} placeholder="00" />
           </div>
-          <div>
-            <label>Cargo</label>
-            <input value={form.cargo} onChange={e=>setForm(f=>({...f,cargo:e.target.value}))} placeholder="Cargo" />
+          <div style={styles.group}>
+            <label style={styles.label}>CPF</label>
+            <input style={styles.input} value={form.cpf} onChange={e=>setForm(f=>({...f,cpf: e.target.value}))} placeholder="000.000.000-00" />
           </div>
         </div>
-        <div className="row">
-          <div>
-            <label>Idade</label>
-            <input type="number" value={form.idade} onChange={e=>setForm(f=>({...f,idade:e.target.value}))} placeholder="Idade" />
-          </div>
-          <div>
-            <label>CPF</label>
-            <input value={form.cpf} onChange={e=>setForm(f=>({...f,cpf: e.target.value}))} placeholder="000.000.000-00" />
-          </div>
-        </div>
-        <div className="toolbar" style={{marginTop:12}}>
+
+        <div className="toolbar" style={{marginTop:20}}>
           <button className="ghost" onClick={clear}>Limpar</button>
           <button className="primary" disabled={!valid} onClick={form.id?update:create}>{form.id?'Atualizar':'Criar'}</button>
         </div>
       </section>
+
       <section className="card" style={{gridColumn:'span 7'}}>
         <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
           <h2>Lista</h2>
@@ -81,13 +92,13 @@ export default function FuncionariosPage(){
             <span className="kbd">{loading? 'Atualizando...' : `${items.length} itens`}</span>
           </div>
         </div>
-        <ul className="list">
+        <ul className="list" style={{marginTop:'15px'}}>
           {items.map(f=> (
             <li key={f.id} onClick={()=>fill(f)}>
               <span>{f.id} — {f.nome} • {f.cargo} • {f.idade} anos • CPF {fmt.cpf(f.cpf)}</span>
               <div className="row" style={{flex:'0 0 auto'}}>
                 <button className="ghost" onClick={(e)=>{e.stopPropagation(); fill(f)}}>Editar</button>
-                <button className="ghost" onClick={(e)=>{e.stopPropagation(); setForm({id:f.id, nome:f.nome, cargo:f.cargo, idade:String(f.idade), cpf:fmt.cpf(f.cpf)}); remove();}}>Excluir</button>
+                <button className="ghost" onClick={(e)=>{e.stopPropagation(); setForm({id:f.id, nome:f.nome, cargo:f.cargo, idade:String(f.idade), cpf:fmt.cpf(f.cpf)}); remove() }} style={{fontSize:'0.8rem', padding:'5px 10px', color:'#ef4444'}}>Excluir</button>
               </div>
             </li>
           ))}

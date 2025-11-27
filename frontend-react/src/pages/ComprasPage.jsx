@@ -7,12 +7,14 @@ export default function ComprasPage(){
     valor_compra:'', debito:'', valor_parcela:'', parcelas:'', fornecedor:'',
     placa:'', cor:'', marca:'', modelo:'', km:'', ano:''
   })
+  
   const valid = useMemo(()=>{
     const placaOk = fmt.placaValid(form.placa)
     const anoNum = Number(form.ano)
     const parcelasNum = Number(form.parcelas)
     return Number(form.valor_compra)>0 && Number(form.debito)>=0 && Number(form.valor_parcela)>=0 && parcelasNum>=1 && form.fornecedor && placaOk && form.cor && form.marca && form.modelo && anoNum>1900 && anoNum<=2030
   },[form])
+
   useEffect(()=>{ (async()=>{ try{ const {data}=await api.get('/compras/'); setItems(Array.isArray(data)?data:[]) }catch(e){ console.error(e) } })() },[])
 
   async function create(){
@@ -33,39 +35,55 @@ export default function ComprasPage(){
     catch(e){ alert(e.response?.data?.error || 'Erro ao registrar compra') }
   }
 
+  const styles = {
+    row: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '15px' },
+    row3: { display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '15px', marginBottom: '15px' },
+    group: { display: 'flex', flexDirection: 'column', gap: '8px' },
+    input: { padding: '12px', borderRadius: '8px', border: '1px solid #374151', backgroundColor: '#111827', color: 'white', width:'100%', outline:'none' },
+    label: { fontSize: '0.9rem', color: '#9ca3af' }
+  }
+
   return (
     <div className="grid">
       <section className="card" style={{gridColumn:'span 6'}}>
-        <h2>Nova Compra</h2>
-        <div className="row">
-          <div><label>Fornecedor</label><input value={form.fornecedor} onChange={e=>setForm(f=>({...f,fornecedor:e.target.value}))} /></div>
-          <div><label>Valor da compra</label><input type="number" value={form.valor_compra} onChange={e=>setForm(f=>({...f,valor_compra:e.target.value}))} /></div>
+        <h2 style={{marginBottom:'20px'}}>Nova Compra</h2>
+        
+        <div style={styles.row}>
+          <div style={styles.group}><label style={styles.label}>Fornecedor</label><input style={styles.input} value={form.fornecedor} onChange={e=>setForm(f=>({...f,fornecedor:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Valor da compra</label><input style={styles.input} type="number" value={form.valor_compra} onChange={e=>setForm(f=>({...f,valor_compra:e.target.value}))} /></div>
         </div>
-        <div className="row">
-          <div><label>Débito</label><input type="number" value={form.debito} onChange={e=>setForm(f=>({...f,debito:e.target.value}))} /></div>
-          <div><label>Valor parcela</label><input type="number" value={form.valor_parcela} onChange={e=>setForm(f=>({...f,valor_parcela:e.target.value}))} /></div>
-          <div><label>Parcelas</label><input type="number" value={form.parcelas} onChange={e=>setForm(f=>({...f,parcelas:e.target.value}))} /></div>
+        
+        <div style={styles.row3}>
+          <div style={styles.group}><label style={styles.label}>Débito</label><input style={styles.input} type="number" value={form.debito} onChange={e=>setForm(f=>({...f,debito:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Valor parcela</label><input style={styles.input} type="number" value={form.valor_parcela} onChange={e=>setForm(f=>({...f,valor_parcela:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Parcelas</label><input style={styles.input} type="number" value={form.parcelas} onChange={e=>setForm(f=>({...f,parcelas:e.target.value}))} /></div>
         </div>
-        <h3>Carro</h3>
-        <div className="row">
-          <div><label>Placa</label><input value={form.placa} onChange={e=>setForm(f=>({...f,placa:e.target.value}))} /></div>
-          <div><label>Cor</label><input value={form.cor} onChange={e=>setForm(f=>({...f,cor:e.target.value}))} /></div>
+
+        <h3 style={{marginTop:'25px', marginBottom:'15px', borderBottom:'1px solid #333', paddingBottom:'5px'}}>Dados do Carro</h3>
+        
+        <div style={styles.row}>
+          <div style={styles.group}><label style={styles.label}>Placa</label><input style={styles.input} value={form.placa} onChange={e=>setForm(f=>({...f,placa:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Cor</label><input style={styles.input} value={form.cor} onChange={e=>setForm(f=>({...f,cor:e.target.value}))} /></div>
         </div>
-        <div className="row">
-          <div><label>Marca</label><input value={form.marca} onChange={e=>setForm(f=>({...f,marca:e.target.value}))} /></div>
-          <div><label>Modelo</label><input value={form.modelo} onChange={e=>setForm(f=>({...f,modelo:e.target.value}))} /></div>
+
+        <div style={styles.row}>
+          <div style={styles.group}><label style={styles.label}>Marca</label><input style={styles.input} value={form.marca} onChange={e=>setForm(f=>({...f,marca:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Modelo</label><input style={styles.input} value={form.modelo} onChange={e=>setForm(f=>({...f,modelo:e.target.value}))} /></div>
         </div>
-        <div className="row">
-          <div><label>Ano</label><input type="number" value={form.ano} onChange={e=>setForm(f=>({...f,ano:e.target.value}))} /></div>
-          <div><label>Km</label><input type="number" value={form.km} onChange={e=>setForm(f=>({...f,km:e.target.value}))} /></div>
+
+        <div style={styles.row}>
+          <div style={styles.group}><label style={styles.label}>Ano</label><input style={styles.input} type="number" value={form.ano} onChange={e=>setForm(f=>({...f,ano:e.target.value}))} /></div>
+          <div style={styles.group}><label style={styles.label}>Km</label><input style={styles.input} type="number" value={form.km} onChange={e=>setForm(f=>({...f,km:e.target.value}))} /></div>
         </div>
-        <div className="toolbar" style={{marginTop:12}}>
+
+        <div className="toolbar" style={{marginTop:20}}>
           <button className="primary" disabled={!valid} onClick={create}>Registrar compra</button>
         </div>
       </section>
+
       <section className="card" style={{gridColumn:'span 6'}}>
-        <h2>Compras</h2>
-        <ul className="list">
+        <h2>Histórico</h2>
+        <ul className="list" style={{marginTop:'15px'}}>
           {items.map(c => (
             <li key={c.id}><span>#{c.id} — {c.fornecedor} — {c.placa} • R$ {Number(c.valor_compra||0).toLocaleString('pt-BR',{minimumFractionDigits:2})} • {c.parcelas}x de R$ {Number(c.valor_parcela||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</span></li>
           ))}
