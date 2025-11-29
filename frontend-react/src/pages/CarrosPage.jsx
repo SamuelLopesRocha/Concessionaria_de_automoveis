@@ -5,7 +5,7 @@ export default function CarrosPage(){
   const [items,setItems]=useState([])
   // Adicionei um estado 'editingPlaca' para saber qual carro estamos editando, caso a placa mude
   const [editingPlaca, setEditingPlaca] = useState(null) 
-  const [form,setForm]=useState({ placa:'', marca:'', modelo:'', cor:'', ano:'', km:'', valor:'' })
+  const [form,setForm]=useState({ placa:'', marca:'', modelo:'', cor:'', ano:'', km:'', valor:'', foto_url:'' })
   
   const valid = useMemo(()=>{
     const placaOk = fmt.placaValid(form.placa)
@@ -28,13 +28,14 @@ export default function CarrosPage(){
       cor: c.cor,
       ano: String(c.ano),
       km: String(c.km),
-      valor: String(c.valor)
+      valor: String(c.valor),
+      foto_url: c.foto_url || ''
     })
   }
 
   function clear(){
     setEditingPlaca(null)
-    setForm({placa:'',marca:'',modelo:'',cor:'',ano:'',km:'',valor:''})
+    setForm({placa:'',marca:'',modelo:'',cor:'',ano:'',km:'',valor:'',foto_url:''})
   }
 
   async function save(){
@@ -46,6 +47,7 @@ export default function CarrosPage(){
       ano: Number(form.ano),
       km: Number(form.km||0),
       valor: Number(form.valor||0),
+      foto_url: form.foto_url.trim(),
     }
 
     try {
@@ -118,6 +120,11 @@ export default function CarrosPage(){
         <div style={styles.group}>
             <label style={styles.label}>Valor (R$)</label>
             <input style={styles.input} type="number" value={form.valor} onChange={e=>setForm(f=>({...f,valor:e.target.value}))} />
+        </div>
+
+        <div style={styles.group}>
+            <label style={styles.label}>URL da Foto</label>
+            <input style={styles.input} value={form.foto_url} onChange={e=>setForm(f=>({...f,foto_url:e.target.value}))} placeholder="https://exemplo.com/foto.jpg" />
         </div>
 
         <div className="toolbar" style={{marginTop:20}}>

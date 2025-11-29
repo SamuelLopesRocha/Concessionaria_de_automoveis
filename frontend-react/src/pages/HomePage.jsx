@@ -125,9 +125,14 @@ export default function HomePage() {
         ) : (
           carros.map(carro => (
             <div key={carro.placa} style={styles.card}>
-              <div style={styles.cardImagePlaceholder}>
-                <span style={{fontWeight:'bold'}}>{carro.marca}</span>
-              </div>
+              {carro.foto_url ? (
+                <img src={carro.foto_url} alt={`${carro.marca} ${carro.modelo}`} 
+                  style={{width:'100%', height:'200px', objectFit:'cover', display:'block'}} />
+              ) : (
+                <div style={styles.cardImagePlaceholder}>
+                  <span style={{fontWeight:'bold'}}>{carro.marca}</span>
+                </div>
+              )}
               
               <div style={styles.cardContent}>
                 {/* Apliquei o estilo novo no Título */}

@@ -39,13 +39,13 @@ func ValidarMarca(marca string) bool {
 	return re.MatchString(marca)
 }
 
-// Valida o modelo do carro (obrigatório, letras, números e espaços)
+// Valida o modelo do carro (obrigatório, letras, números, espaços e ponto)
 func ValidarModelo(modelo string) bool {
 	modelo = strings.TrimSpace(modelo)
 	if len(modelo) == 0 {
 		return false // obrigatório
 	}
-	re := regexp.MustCompile(`^[A-Za-zÀ-ÿ0-9\s]+$`)
+	re := regexp.MustCompile(`^[A-Za-zÀ-ÿ0-9\s.]+$`)
 	return re.MatchString(modelo)
 }
 
