@@ -75,3 +75,23 @@ button.ghost:hover { background: rgba(255,255,255,.03) }
 .carousel-card .meta { color: var(--muted) }
 .carousel-card .price { font-size: 20px; font-weight: 800; color: var(--accent) }
 .muted { color: var(--muted) }
+
+/* =========================
+   VALIDAÇÃO DE FORMULÁRIO
+   ========================= */
+
+.input-valid {
+  border: 2px solid #22c55e !important; /* verde */
+  background-color: rgba(34, 197, 94, 0.08);
+}
+
+.input-invalid {
+  border: 2px solid #ef4444 !important; /* vermelho */
+  background-color: rgba(239, 68, 68, 0.08);
+}
+
+.error-text {
+  color: #ef4444;
+  font-size: 12px;
+  margin-top: 2px;
+}
