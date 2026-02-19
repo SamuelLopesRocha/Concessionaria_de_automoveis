@@ -15,7 +15,7 @@ import (
 //
 
 type VendaInput struct {
-	IdCarro       uint    `json:"id_carro"`
+	IdCarro       string  `json:"id_carro"`
 	IdFuncionario uint    `json:"id_funcionario"`
 	DataVenda     string  `json:"data_venda"`
 	ValorVenda    float64 `json:"valor_venda"`
@@ -78,16 +78,18 @@ func CreateVenda_C(c *gin.Context) {
 		return
 	}
 
-	// 🔴 PROTEÇÃO REAL CONTRA NULL NO BANCO
 	if input.ValorVenda <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "valor_venda é obrigatório e deve ser maior que zero",
+			"error": "valor_venda deve ser maior que zero",
 		})
 		return
 	}
 
-	// 🔹 Cliente
+	// =========================
+	// CLIENTE
+	// =========================
 	var cli cliente.Cliente
+
 	err := config.DB.Where("cpf = ?", input.CPF).First(&cli).Error
 
 	if err != nil {
@@ -106,7 +108,9 @@ func CreateVenda_C(c *gin.Context) {
 		}
 	}
 
-	// 🔹 Venda
+	// =========================
+	// VENDA
+	// =========================
 	venda := Venda{
 		CarroID:       input.IdCarro,
 		FuncionarioID: input.IdFuncionario,
@@ -121,7 +125,6 @@ func CreateVenda_C(c *gin.Context) {
 	}
 
 	if err := CreateVenda(&venda); err != nil {
-		println("ERRO REAL AO CRIAR VENDA:", err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
@@ -138,25 +141,75 @@ func CreateVenda_C(c *gin.Context) {
 //
 
 func UpdateVenda_C(c *gin.Context) {
+
 	id := c.Param("id")
 
-	venda, err := GetVendaById(id)
+	vendaExistente, err := GetVendaById(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Venda não encontrada"})
+		c.JSON(404, gin.H{"error": "Venda não encontrada"})
 		return
 	}
 
-	if err := c.ShouldBindJSON(venda); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	var input VendaInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 
-	if err := UpdateVenda(venda); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+	// =========================
+	// ATUALIZA VENDA
+	// =========================
+	vendaExistente.DataVenda = input.DataVenda
+	vendaExistente.ValorVenda = input.ValorVenda
+	vendaExistente.FormaPgto = input.FormaPgto
+	vendaExistente.Parcelas = input.Parcelas
+	vendaExistente.Juros = input.Juros
+	vendaExistente.Desconto = input.Desconto
+	vendaExistente.ComissaoVend = input.Comissao
+
+	// =========================
+	// CLIENTE
+	// =========================
+	if vendaExistente.ClienteID == 0 {
+
+		novoCliente := cliente.Cliente{
+			Nome:     input.Nome,
+			CPF:      input.CPF,
+			Telefone: input.Telefone,
+			Email:    input.Email,
+		}
+
+		if err := config.DB.Create(&novoCliente).Error; err != nil {
+			c.JSON(500, gin.H{"error": "Erro ao criar cliente"})
+			return
+		}
+
+		vendaExistente.ClienteID = novoCliente.ID
+
+	} else {
+
+		var cli cliente.Cliente
+
+		if err := config.DB.First(&cli, vendaExistente.ClienteID).Error; err == nil {
+
+			cli.Nome = input.Nome
+			cli.CPF = input.CPF
+			cli.Telefone = input.Telefone
+			cli.Email = input.Email
+
+			config.DB.Save(&cli)
+		}
+	}
+
+	// =========================
+	// SALVA VENDA (USA SUA FUNÇÃO)
+	// =========================
+	if err := UpdateVenda(vendaExistente); err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, venda)
+	c.JSON(200, vendaExistente)
 }
 
 //
