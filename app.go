@@ -53,6 +53,7 @@ func main() {
 	funcionario.FuncRoutes(r)
 	compra.CompraRoutes(r)
 	venda.VendaRoutes(r)
+	cliente.ClienteRoutes(r)
 
 	log.Println("API ouvindo em http://localhost:5001")
 	if err := r.Run("0.0.0.0:5001"); err != nil {

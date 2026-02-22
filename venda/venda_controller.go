@@ -2,9 +2,11 @@ package venda
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/cliente"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -106,6 +108,12 @@ func CreateVenda_C(c *gin.Context) {
 			})
 			return
 		}
+	} else {
+		// Atualiza dados caso já exista
+		cli.Nome = input.Nome
+		cli.Telefone = input.Telefone
+		cli.Email = input.Email
+		config.DB.Save(&cli)
 	}
 
 	// =========================
@@ -129,6 +137,27 @@ func CreateVenda_C(c *gin.Context) {
 			"error": err.Error(),
 		})
 		return
+	}
+
+	// =========================
+	// ENVIO AUTOMÁTICO DE EMAIL
+	// =========================
+	if cli.StatusEmail != cliente.Verificado {
+
+		now := time.Now()
+		cli.StatusEmail = cliente.Pendente
+		cli.DataEnvioEmail = &now
+		cli.TentativasEnvio++
+
+		if err := config.DB.Save(&cli).Error; err != nil {
+			println("Erro ao atualizar status de email:", err.Error())
+		}
+
+		go func(nome, email string) {
+			if err := utils.EnviarEmailConfirmacao(nome, email); err != nil {
+				println("Erro ao enviar email:", err.Error())
+			}
+		}(cli.Nome, cli.Email)
 	}
 
 	c.JSON(http.StatusCreated, venda)
@@ -202,7 +231,7 @@ func UpdateVenda_C(c *gin.Context) {
 	}
 
 	// =========================
-	// SALVA VENDA (USA SUA FUNÇÃO)
+	// SALVA VENDA
 	// =========================
 	if err := UpdateVenda(vendaExistente); err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})
