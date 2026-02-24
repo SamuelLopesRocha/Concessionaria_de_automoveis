@@ -5,6 +5,7 @@ import logo from "../assets/logo.svg"
 export default function VendasClientesDoc() {
   const [vendas, setVendas] = useState([])
 
+  // ===== Buscar vendas =====
   useEffect(() => {
     fetchVendas()
   }, [])
@@ -15,38 +16,53 @@ export default function VendasClientesDoc() {
       setVendas(Array.isArray(data) ? data : [])
     } catch (err) {
       console.error("Erro ao buscar vendas:", err)
+      alert("Erro ao buscar vendas. Confira o backend.")
     }
   }
 
+  // ===== Função para cores de status =====
   const corStatus = (status) => {
     if (status === "VERIFICADO") return "status-verificado"
     if (status === "PENDENTE") return "status-pendente"
     return "status-nao-enviado"
   }
 
-  const reenviarEmail = async (clienteId) => {
+  // ===== Função reenviarEmail com validação e confirmação =====
+  const reenviarEmail = async (clienteId, nomeCliente, emailCliente) => {
+    if (!clienteId || !emailCliente || !/\S+@\S+\.\S+/.test(emailCliente)) {
+      alert(`Email inválido para ${nomeCliente}`)
+      return
+    }
+
+    const confirmacao = window.confirm(`Deseja reenviar o email para ${nomeCliente}?`)
+    if (!confirmacao) return
+
     try {
-      await api.post(`/clientes/${clienteId}/reenviar-email`)
-      fetchVendas()
+      const res = await api.post(`/clientes/${clienteId}/reenviar-email`)
+      if (res.data.status === "ok") {
+        alert(`Email enviado para ${nomeCliente} com sucesso!`)
+        fetchVendas()
+      }
     } catch (err) {
-      console.error("Erro ao reenviar email:", err)
+      console.error(err)
+      alert(`Erro ao enviar email para ${nomeCliente}: ${err.response?.data?.error || err.message}`)
     }
   }
 
-  // ===== RESUMO =====
-    const total = vendas.length
-    const verificados = vendas.filter(v => v.Cliente?.status_email === "VERIFICADO").length
-    const pendentes = vendas.filter(v => v.Cliente?.status_email === "PENDENTE").length
-    const naoEnviados = vendas.filter(v => {
+  // ===== Resumo =====
+  const total = vendas.length
+  const verificados = vendas.filter(v => v.Cliente?.status_email === "VERIFICADO").length
+  const pendentes = vendas.filter(v => v.Cliente?.status_email === "PENDENTE").length
+  const naoEnviados = vendas.filter(v => {
     const s = v.Cliente?.status_email
-  return !s || (s !== "VERIFICADO" && s !== "PENDENTE")
-}).length
+    return !s || (s !== "VERIFICADO" && s !== "PENDENTE")
+  }).length
 
+  // ===== Estilos inline =====
   const styles = {
     container: { padding: "20px", backgroundColor: "#111827", minHeight: "100vh", fontFamily: "sans-serif" },
     header: { display: "flex", alignItems: "center", marginBottom: "30px" },
     logo: { width: 60, marginRight: "15px" },
-    docHeader: { marginBottom: "20px", color: "white" },
     docSummary: { display: "flex", gap: "15px", marginBottom: "30px" },
     summaryCard: { flex: 1, backgroundColor: "#1f2937", padding: "20px", borderRadius: "8px", textAlign: "center", color: "white" },
     summaryGreen: { backgroundColor: "#22c55e" },
@@ -57,7 +73,6 @@ export default function VendasClientesDoc() {
     table: { width: "100%", borderCollapse: "collapse" },
     th: { textAlign: "left", padding: "12px", borderBottom: "2px solid #374151", color: "#d1d5db" },
     td: { padding: "12px", borderBottom: "1px solid #374151", color: "#e5e7eb" },
-    trHover: { backgroundColor: "#1e293b" },
     btn: { padding: "6px 12px", borderRadius: "6px", backgroundColor: "#3b82f6", color: "white", border: "none", cursor: "pointer" },
     status: { padding: "4px 8px", borderRadius: "4px", fontWeight: "bold", textTransform: "uppercase", fontSize: "0.75rem" },
     statusVerificado: { backgroundColor: "#22c55e", color: "white" },
@@ -75,29 +90,25 @@ export default function VendasClientesDoc() {
     <div style={styles.container}>
       <header style={styles.header}>
         <img src={logo} alt="Logo" style={styles.logo} />
-        <h1>Verificação de Emails</h1>
+        <h1>Verificação de Vendas</h1>
       </header>
 
       {/* ===== RESUMO ===== */}
       <div style={styles.docSummary}>
         <div style={styles.summaryCard}>
-          <span>Total Registros</span>
-          <br />
+          <span>Total Registros</span><br />
           <strong>{total}</strong>
         </div>
         <div style={{ ...styles.summaryCard, ...styles.summaryGreen }}>
-          <span>Verificados</span>
-          <br />
+          <span>Verificados</span><br />
           <strong>{verificados}</strong>
         </div>
         <div style={{ ...styles.summaryCard, ...styles.summaryYellow }}>
-          <span>Pendentes</span>
-          <br />
+          <span>Pendentes</span><br />
           <strong>{pendentes}</strong>
         </div>
         <div style={{ ...styles.summaryCard, ...styles.summaryRed }}>
-          <span>Não Enviados</span>
-          <br />
+          <span>Não Enviados</span><br />
           <strong>{naoEnviados}</strong>
         </div>
       </div>
@@ -132,16 +143,15 @@ export default function VendasClientesDoc() {
                     </span>
                   </td>
                   <td style={styles.td}>
-                    {venda.Cliente?.status_email !== "VERIFICADO" && venda.Cliente && (
-                      <button
-                        style={styles.btn}
-                        onMouseOver={e => e.currentTarget.style.backgroundColor = "#2563eb"}
-                        onMouseOut={e => e.currentTarget.style.backgroundColor = "#3b82f6"}
-                        onClick={() => reenviarEmail(venda.Cliente.id)}
-                      >
-                        Reenviar
-                      </button>
-                    )}
+                    {/* ===== BOTÃO SEM SUMIR ===== */}
+                    <button
+                      style={styles.btn}
+                      onMouseOver={e => e.currentTarget.style.backgroundColor = "#2563eb"}
+                      onMouseOut={e => e.currentTarget.style.backgroundColor = "#3b82f6"}
+                      onClick={() => reenviarEmail(venda.Cliente?.ID, venda.Cliente?.nome, venda.Cliente?.email)}
+                    >
+                      Reenviar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -149,7 +159,6 @@ export default function VendasClientesDoc() {
           </table>
         </div>
       </section>
-
     </div>
   )
 }

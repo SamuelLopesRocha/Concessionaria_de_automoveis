@@ -49,10 +49,13 @@ func main() {
 		c.Next()
 	})
 
+	// Rotas dos módulos
 	carro.CarroRoutes(r)
 	funcionario.FuncRoutes(r)
 	compra.CompraRoutes(r)
 	venda.VendaRoutes(r)
+
+	// ✅ Cliente usando padrão ClienteRoutes (sem Handler)
 	cliente.ClienteRoutes(r)
 
 	log.Println("API ouvindo em http://localhost:5001")

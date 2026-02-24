@@ -23,9 +23,13 @@ type Cliente struct {
 	Email    string `json:"email" gorm:"not null"`
 
 	// Controle de Email
-	StatusEmail StatusEmail `json:"status_email" gorm:"type:varchar(20);default:'NAO_ENVIADO'"`
+	StatusEmail          StatusEmail `json:"status_email" gorm:"type:varchar(20);default:'NAO_ENVIADO'"`
+	DataEnvioEmail       *time.Time  `json:"data_envio_email"`
+	DataConfirmacaoEmail *time.Time  `json:"data_confirmacao_email"`
+	TentativasEnvio      int         `json:"tentativas_envio" gorm:"default:0"`
 
-	DataEnvioEmail       *time.Time `json:"data_envio_email"`
-	DataConfirmacaoEmail *time.Time `json:"data_confirmacao_email"`
-	TentativasEnvio      int        `json:"tentativas_envio" gorm:"default:0"`
+	// Verificação por token (Plano B)
+	EmailToken         string     `json:"-" gorm:"type:varchar(120);index"`
+	EmailTokenExpiraEm *time.Time `json:"-"`
+	EmailTokenUsadoEm  *time.Time `json:"-"`
 }
