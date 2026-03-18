@@ -24,7 +24,6 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 		return
 	}
 
-	// Token seguro
 	token, err := gerarTokenEmail()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "falha ao gerar token"})
@@ -37,7 +36,6 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 	cli.EmailToken = token
 	cli.EmailTokenExpiraEm = &exp
 	cli.EmailTokenUsadoEm = nil
-
 	cli.StatusEmail = Pendente
 	cli.DataEnvioEmail = &now
 	cli.TentativasEnvio += 1
@@ -47,15 +45,9 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 		return
 	}
 
-	// ✅ Link com a porta real (ex.: localhost:5001)
-	scheme := "http"
-	if c.Request.TLS != nil {
-		scheme = "https"
-	}
-	host := c.Request.Host // ex: localhost:5001
-	linkVerificacao := scheme + "://" + host + "/verificar-email?token=" + token
+	// ✅ Para DEV: evita problema de localhost/IPv6
+	linkVerificacao := "http://127.0.0.1:5001/verificar-email?token=" + token
 
-	// Python
 	pythonEndpoint := "http://localhost:5000/send-email"
 
 	status, body, err := enviarEmailViaPython(
@@ -87,25 +79,25 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 func (h *Handler) VerificarEmail(c *gin.Context) {
 	token := c.Query("token")
 	if token == "" {
-		c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=erro&motivo=token_ausente")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte(paginaErro("Token ausente", "Reenvie o e-mail e use o link mais recente.")))
 		return
 	}
 
 	var cli Cliente
 	if err := h.DB.Where("email_token = ?", token).First(&cli).Error; err != nil {
-		c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=erro&motivo=token_invalido")
+		c.Data(http.StatusNotFound, "text/html; charset=utf-8", []byte(paginaErro("Token inválido", "Reenvie o e-mail e tente novamente.")))
 		return
 	}
 
 	now := time.Now()
 
 	if cli.EmailTokenUsadoEm != nil {
-		c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=erro&motivo=token_usado")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte(paginaErro("Token já utilizado", "Este link já foi usado. Se precisar, reenvie o e-mail.")))
 		return
 	}
 
 	if cli.EmailTokenExpiraEm == nil || now.After(*cli.EmailTokenExpiraEm) {
-		c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=erro&motivo=token_expirado")
+		c.Data(http.StatusBadRequest, "text/html; charset=utf-8", []byte(paginaErro("Token expirado", "Reenvie o e-mail para gerar um novo link.")))
 		return
 	}
 
@@ -114,9 +106,35 @@ func (h *Handler) VerificarEmail(c *gin.Context) {
 	cli.EmailTokenUsadoEm = &now
 
 	if err := h.DB.Save(&cli).Error; err != nil {
-		c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=erro&motivo=falha_banco")
+		c.Data(http.StatusInternalServerError, "text/html; charset=utf-8", []byte(paginaErro("Falha ao confirmar", "Tente novamente em instantes.")))
 		return
 	}
 
-	c.Redirect(http.StatusFound, "http://localhost:3000/email-verificado?status=ok")
+	c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(paginaSucesso(cli.Nome)))
+}
+
+func paginaSucesso(nome string) string {
+	return `<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>E-mail verificado</title></head>
+<body style="font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;margin:0;padding:24px;">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;padding:22px;box-shadow:0 8px 24px rgba(0,0,0,.08);">
+    <h2 style="margin:0 0 10px 0;color:#16a34a;">✅ E-mail verificado com sucesso!</h2>
+    <p style="margin:0;color:#334155;line-height:1.6;">Obrigado, ` + nome + `. Seu e-mail foi confirmado.</p>
+  </div>
+</body>
+</html>`
+}
+
+func paginaErro(titulo, detalhe string) string {
+	return `<!doctype html>
+<html lang="pt-br">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Falha na verificação</title></head>
+<body style="font-family:Arial,Helvetica,sans-serif;background:#f6f7fb;margin:0;padding:24px;">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:14px;padding:22px;box-shadow:0 8px 24px rgba(0,0,0,.08);">
+    <h2 style="margin:0 0 10px 0;color:#dc2626;">❌ ` + titulo + `</h2>
+    <p style="margin:0;color:#334155;line-height:1.6;">` + detalhe + `</p>
+  </div>
+</body>
+</html>`
 }

@@ -8,6 +8,7 @@ import CarrosPage from './pages/CarrosPage.jsx'
 import ComprasPage from './pages/ComprasPage.jsx'
 import VendasPage from './pages/VendasPage.jsx'
 import VendasClientesPage from './pages/VendasClientesPage.jsx'
+import EnvioDocumentos from "./pages/EnvioDocumentos"
 import { FaGear } from "react-icons/fa6";
 
 export default function App() {
@@ -22,7 +23,7 @@ export default function App() {
         <div className="brand">
           <img src={logo} alt="Pluto" />
           <div>
-            <div>Concessionária Pluto (nome provisório)</div>
+            <div>Concessionária Pluto</div>
             <div className="tagline">Sistema de Gestão</div>
           </div>
         </div>
@@ -37,6 +38,7 @@ export default function App() {
             <NavLink to="/compras">Compras</NavLink>
             <NavLink to="/vendas">Vendas</NavLink>
             <NavLink to="/vendas-clientes">Documentação</NavLink>
+            <NavLink to="/envio-documentos">Envio de Documentos</NavLink>
             <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer">Dashboards</a>
           </>
         )}
@@ -55,14 +57,15 @@ export default function App() {
 
       <main className="container">
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<HomePage />} />
-          <Route path="/funcionarios" element={<FuncionariosPage />} />
-          <Route path="/carros" element={<CarrosPage />} />
-          <Route path="/compras" element={<ComprasPage />} />
-          <Route path="/vendas" element={<VendasPage />} />
-          <Route path="/vendas-clientes" element={<VendasClientesPage />} />
-        </Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/funcionarios" element={<FuncionariosPage />} />
+            <Route path="/carros" element={<CarrosPage />} />
+            <Route path="/compras" element={<ComprasPage />} />
+            <Route path="/vendas" element={<VendasPage />} />
+            <Route path="/vendas-clientes" element={<VendasClientesPage />} />
+            <Route path="/envio-documentos" element={<EnvioDocumentos />} />
+      </Routes>
       </main>
 
       <footer className="footer">© {new Date().getFullYear()} Concessionária</footer>
