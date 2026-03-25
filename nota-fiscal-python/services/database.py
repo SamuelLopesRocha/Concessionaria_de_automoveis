@@ -60,7 +60,7 @@ def get_venda_data(venda_id: int):
             "cliente_telefone": venda["cliente_telefone"],
             "itens": [
                 {
-                    "descricao": f'{venda["marca"]} {venda["modelo"]} {venda["ano"]} - Placa {venda["placa"]}',
+                    "descricao": f'Veículo {venda["marca"]} {venda["modelo"]}, ano {venda["ano"]}, placa {venda["placa"]}',
                     "quantidade": 1,
                     "valor_unitario": venda["valor_unitario"],
                     "valor_total": venda["valor_total"]
