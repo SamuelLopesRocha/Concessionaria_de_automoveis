@@ -7,19 +7,22 @@ import (
 
 var DB *gorm.DB
 
+import "os"
+
 func ConnectDatabase() {
-	// Pegue a connection string no painel do Supabase
-	dsn := "postgresql://postgres:faculdadeimpacta@db.mbpgssybkzbklyywjuwt.supabase.co:5432/postgres"
+   dsn := os.Getenv("DATABASE_URL")
+   if dsn == "" {
+	   panic("❌ Variável de ambiente DATABASE_URL não definida!")
+   }
 
-	// Abre a conexão com PreferSimpleProtocol para evitar erro de prepared statement
-	database, err := gorm.Open(postgres.New(postgres.Config{
-		DSN:                  dsn,
-		PreferSimpleProtocol: true, // 🔴 resolve o bug do stmtcache
-	}), &gorm.Config{})
+   database, err := gorm.Open(postgres.New(postgres.Config{
+	   DSN:                  dsn,
+	   PreferSimpleProtocol: true, // 🔴 resolve o bug do stmtcache
+   }), &gorm.Config{})
 
-	if err != nil {
-		panic("❌ Falha ao conectar ao PostgreSQL do Supabase")
-	}
+   if err != nil {
+	   panic("❌ Falha ao conectar ao PostgreSQL do Supabase")
+   }
 
-	DB = database
+   DB = database
 }
