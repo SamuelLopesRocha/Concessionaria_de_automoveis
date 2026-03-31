@@ -1,8 +1,8 @@
 import axios from 'axios'
 
 const host = (location.hostname === 'localhost' || location.hostname.startsWith('127.'))
-  ? `http://${location.hostname}:5001`
-  : 'http://localhost:5001'
+  ? `http://${location.hostname}:5002`
+  : 'http://localhost:5002'
 
 export const api = axios.create({
   baseURL: host,

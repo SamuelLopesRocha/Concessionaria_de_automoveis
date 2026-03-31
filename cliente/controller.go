@@ -2,6 +2,7 @@ package cliente
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -45,10 +46,10 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 		return
 	}
 
-	// ✅ Para DEV: evita problema de localhost/IPv6
-	linkVerificacao := "http://127.0.0.1:5001/verificar-email?token=" + token
+	linkVerificacao := "http://127.0.0.1:5002/verificar-email?token=" + token
+	pythonEndpoint := "http://127.0.0.1:5000/send-email"
 
-	pythonEndpoint := "http://localhost:5000/send-email"
+	fmt.Println("LINK GERADO NO GO:", linkVerificacao)
 
 	status, body, err := enviarEmailViaPython(
 		context.Background(),
@@ -70,8 +71,9 @@ func (h *Handler) ReenviarEmail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":        "ok",
-		"python_status": status,
+		"status":           "ok",
+		"python_status":    status,
+		"link_verificacao": linkVerificacao,
 	})
 }
 
@@ -104,6 +106,7 @@ func (h *Handler) VerificarEmail(c *gin.Context) {
 	cli.StatusEmail = Verificado
 	cli.DataConfirmacaoEmail = &now
 	cli.EmailTokenUsadoEm = &now
+	cli.EmailToken = ""
 
 	if err := h.DB.Save(&cli).Error; err != nil {
 		c.Data(http.StatusInternalServerError, "text/html; charset=utf-8", []byte(paginaErro("Falha ao confirmar", "Tente novamente em instantes.")))

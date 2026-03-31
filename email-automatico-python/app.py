@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 from pathlib import Path
 import traceback
 
-BASE_DIR = Path(__file__).resolve().parent
-load_dotenv(BASE_DIR / ".env")  # força ler o .env certo
+from email_sender import enviar_email
 
-from email_sender import enviar_email  # depois do load_dotenv
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(BASE_DIR / ".env")
 
 app = Flask(__name__)
 
@@ -66,10 +66,6 @@ def montar_email_html(nome: str, link_verificacao: str) -> str:
               </td>
             </tr>
           </table>
-
-          <div style="width:600px;margin-top:10px;color:#94a3b8;font-size:11px;text-align:center;">
-            Dica: adicione este remetente aos seus contatos para evitar que o e-mail vá para spam.
-          </div>
         </td>
       </tr>
     </table>
@@ -88,6 +84,20 @@ def montar_email_texto(nome: str, link_verificacao: str) -> str:
     )
 
 
+@app.get("/")
+def home():
+    return """
+    <html>
+      <head><title>Serviço de E-mail</title></head>
+      <body style="font-family:Arial;padding:40px;background:#f6f7fb;">
+        <h1>Serviço de envio de e-mail</h1>
+        <p>Servidor no ar.</p>
+        <p><a href="/health">/health</a></p>
+      </body>
+    </html>
+    """
+
+
 @app.get("/health")
 def health():
     return jsonify({"status": "ok"}), 200
@@ -103,24 +113,33 @@ def send_email():
         email = (body.get("email") or "").strip()
         link_verificacao = (body.get("link_verificacao") or "").strip()
 
-        # validações
         if not cliente_id:
             return jsonify({"error": "cliente_id ausente"}), 400
         if not nome:
             return jsonify({"error": "nome ausente"}), 400
-        if not email or ("@" not in email) or ("." not in email):
+        if not email or "@" not in email or "." not in email:
             return jsonify({"error": f"email inválido: {email}"}), 400
         if not link_verificacao.startswith("http"):
             return jsonify({"error": "link_verificacao ausente ou inválido"}), 400
+
+        print("LINK RECEBIDO NO PYTHON:", link_verificacao)
 
         assunto = "Verificação de E-mail • Pluto Concessionária"
         html = montar_email_html(nome, link_verificacao)
         texto = montar_email_texto(nome, link_verificacao)
 
-        # ✅ agora envia HTML + texto
-        enviar_email(destinatario=email, assunto=assunto, texto=texto, html=html)
+        enviar_email(
+            destinatario=email,
+            assunto=assunto,
+            texto=texto,
+            html=html
+        )
 
-        return jsonify({"status": "ok"}), 200
+        return jsonify({
+            "status": "ok",
+            "message": "e-mail enviado com sucesso",
+            "link_verificacao": link_verificacao
+        }), 200
 
     except Exception as e:
         print("❌ ERRO NO /send-email")

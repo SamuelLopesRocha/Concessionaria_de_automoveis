@@ -49,17 +49,14 @@ func main() {
 		c.Next()
 	})
 
-	// Rotas dos módulos
 	carro.CarroRoutes(r)
 	funcionario.FuncRoutes(r)
 	compra.CompraRoutes(r)
 	venda.VendaRoutes(r)
-
-	// ✅ Cliente usando padrão ClienteRoutes (sem Handler)
 	cliente.ClienteRoutes(r)
 
-	log.Println("API ouvindo em http://localhost:5001")
-	if err := r.Run("0.0.0.0:5001"); err != nil {
+	log.Println("API ouvindo em http://127.0.0.1:5002")
+	if err := r.Run("127.0.0.1:5002"); err != nil {
 		fmt.Println("Falha ao iniciar servidor:", err)
 	}
 }

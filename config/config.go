@@ -1,8 +1,6 @@
 package config
 
 import (
-	"os"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -10,14 +8,13 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	dsn := os.Getenv("DATABASE_URL")
-	if dsn == "" {
-		panic("❌ Variável de ambiente DATABASE_URL não definida!")
-	}
+	// Pegue a connection string no painel do Supabase
+	dsn := "postgresql://postgres:faculdadeimpacta@db.mbpgssybkzbklyywjuwt.supabase.co:5432/postgres"
 
+	// Abre a conexão com PreferSimpleProtocol para evitar erro de prepared statement
 	database, err := gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
-		PreferSimpleProtocol: true, // resolve bug stmtcache
+		PreferSimpleProtocol: true, // 🔴 resolve o bug do stmtcache
 	}), &gorm.Config{})
 
 	if err != nil {

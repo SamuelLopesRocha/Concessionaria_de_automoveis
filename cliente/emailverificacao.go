@@ -39,7 +39,9 @@ func enviarEmailViaPython(ctx context.Context, pythonURL string, payload emailPy
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	client := &http.Client{Timeout: 8 * time.Second}
+	client := &http.Client{
+		Timeout: 8 * time.Second,
+	}
 
 	resp, err := client.Do(req)
 	if err != nil {
