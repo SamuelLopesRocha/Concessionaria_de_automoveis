@@ -11,6 +11,7 @@ import (
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/compra"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/config"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/funcionario"
+	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/simulador"
 	"github.com/SamuelLopesRocha/Concessionaria_de_automoveis/venda"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -54,6 +55,7 @@ func main() {
 	compra.CompraRoutes(r)
 	venda.VendaRoutes(r)
 	cliente.ClienteRoutes(r)
+	simulador.SimuladorRoutes(r)
 
 	log.Println("API ouvindo em http://127.0.0.1:5002")
 	if err := r.Run("127.0.0.1:5002"); err != nil {
