@@ -7,7 +7,6 @@ import FuncionariosPage from './pages/FuncionariosPage.jsx'
 import CarrosPage from './pages/CarrosPage.jsx'
 import ComprasPage from './pages/ComprasPage.jsx'
 import VendasPage from './pages/VendasPage.jsx'
-import SimuladorPage from './pages/SimuladorPage.jsx'
 import VendasClientesPage from './pages/VendasClientesPage.jsx'
 import EnvioDocumentos from "./pages/EnvioDocumentos"
 import { FaGear } from "react-icons/fa6";
@@ -34,13 +33,12 @@ export default function App() {
         {!isPublicPage && (
           <>
             <NavLink to="/" end>Início</NavLink>
-            <NavLink to="/simulador">Simulador</NavLink>
             <NavLink to="/funcionarios">Funcionários</NavLink>
             <NavLink to="/carros">Carros</NavLink>
             <NavLink to="/compras">Compras</NavLink>
             <NavLink to="/vendas">Vendas</NavLink>
-            <NavLink to="/vendas-clientes">Verificação Email</NavLink>
-            <NavLink to="/envio-documentos">Documentos</NavLink>
+            <NavLink to="/vendas-clientes">Documentação</NavLink>
+            <NavLink to="/envio-documentos">Envio de Documentos</NavLink>
             <a href="http://localhost:8501" target="_blank" rel="noopener noreferrer">Dashboards</a>
           </>
         )}
@@ -67,7 +65,6 @@ export default function App() {
             <Route path="/vendas" element={<VendasPage />} />
             <Route path="/vendas-clientes" element={<VendasClientesPage />} />
             <Route path="/envio-documentos" element={<EnvioDocumentos />} />
-            <Route path="/simulador" element={<SimuladorPage />} />
       </Routes>
       </main>
 
