@@ -95,3 +95,47 @@ button.ghost:hover { background: rgba(255,255,255,.03) }
   font-size: 12px;
   margin-top: 2px;
 }
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 120px;
+}
+
+.nav-title {
+  font-size: 11px;
+  color: #9ca3af;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.nav-links a:hover {
+  color: #2563eb;
+}
+
+.gear {
+  margin-left: auto;
+  font-size: 18px;
+}
