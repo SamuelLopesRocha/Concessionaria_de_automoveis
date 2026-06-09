@@ -8,6 +8,8 @@ import VendasPage from './pages/VendasPage.jsx'
 import VendasClientesPage from './pages/VendasClientesPage.jsx'
 import SeguroPage from "./pages/SeguroPage"
 import EnvioDocumentos from "./pages/EnvioDocumentos"
+import ComissaoPage from "./pages/ComissaoPage"
+import EscalaPage from "./pages/EscalaPage"
 import { FaGear } from "react-icons/fa6"
 
 export default function App() {
@@ -41,6 +43,8 @@ export default function App() {
               <NavLink to="/seguro">Seguro</NavLink>
               <NavLink to="/vendas-clientes">Documentação</NavLink>
               <NavLink to="/envio-documentos">Documentos</NavLink>
+              <NavLink to="/comissao"> Comissão </NavLink>
+              <NavLink to="/escala">Escalas</NavLink>
 
               <a
                 href="http://localhost:8501"
@@ -74,6 +78,8 @@ export default function App() {
           <Route path="/seguro" element={<SeguroPage />} />
           <Route path="/vendas-clientes" element={<VendasClientesPage />} />
           <Route path="/envio-documentos" element={<EnvioDocumentos />} />
+          <Route path="/comissao" element={<ComissaoPage />} />
+          <Route path="/escala" element={<EscalaPage />} />
         </Routes>
       </main>
 

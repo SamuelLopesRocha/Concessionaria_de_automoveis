@@ -139,3 +139,215 @@ button.ghost:hover { background: rgba(255,255,255,.03) }
   margin-left: auto;
   font-size: 18px;
 }
+
+/* ==========================================
+   ESCALA DE FUNCIONÁRIOS
+========================================== */
+
+.escala-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.escala-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: white;
+}
+
+.escala-subtitle {
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.escala-card {
+  background: linear-gradient(
+    135deg,
+    rgba(13,71,161,.20),
+    rgba(255,213,79,.05)
+  );
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 40px rgba(0,0,0,.35);
+}
+
+.escala-filtros {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.escala-select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #374151;
+  background: #111827;
+  color: white;
+  font-size: 14px;
+}
+
+.escala-select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.2);
+}
+
+.btn-gerar {
+  background: linear-gradient(
+    135deg,
+    #2563eb,
+    #1d4ed8
+  );
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 14px 25px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-gerar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(37,99,235,.35);
+}
+
+.btn-pdf {
+  background: linear-gradient(
+    135deg,
+    #16a34a,
+    #15803d
+  );
+  border: none;
+  color: white;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 14px 25px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.btn-pdf:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(22,163,74,.35);
+}
+
+.escala-table-container {
+  overflow-x: auto;
+  margin-top: 20px;
+  border-radius: 16px;
+}
+
+.escala-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1000px;
+}
+
+.escala-table th {
+  background: rgba(13,71,161,.35);
+  color: white;
+  padding: 14px;
+  text-align: center;
+  font-size: 13px;
+  position: sticky;
+  top: 0;
+}
+
+.escala-table td {
+  border-bottom: 1px solid #1f2937;
+  text-align: center;
+  padding: 12px;
+}
+
+.escala-table tr:hover {
+  background: rgba(255,255,255,.03);
+}
+
+.funcionario-nome {
+  text-align: left !important;
+  font-weight: 600;
+  color: white;
+}
+
+.turno-manha {
+  background: rgba(59,130,246,.18);
+  color: #93c5fd;
+  border-radius: 8px;
+  padding: 5px 8px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.turno-tarde {
+  background: rgba(245,158,11,.15);
+  color: #fcd34d;
+  border-radius: 8px;
+  padding: 5px 8px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.turno-folga {
+  background: rgba(239,68,68,.15);
+  color: #fca5a5;
+  border-radius: 8px;
+  padding: 5px 8px;
+  display: inline-block;
+  font-weight: 600;
+}
+
+.escala-kpis {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.escala-kpi {
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,.03),
+    rgba(255,255,255,.01)
+  );
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.escala-kpi-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.escala-kpi-value {
+  font-size: 28px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.escala-preview {
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.badge-mes {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,213,79,.15);
+  color: #ffd54f;
+  border: 1px solid rgba(255,213,79,.2);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 700;
+}
